@@ -44,9 +44,28 @@ type Service interface {
 	Execute(snap store.Snapshot, step Step) (Result, error)
 }
 
-func ExecuteBeta() (Result, error) {
+type WASMService struct{}
+
+func (s *WASMService) Execute(snap store.Snapshot, step Step) (Result, error) {
+	responseBody := bytes.NewBuffer(step.Current.GetArg("json"))
+	resp, err := http.Post("http://127.0.0.1:3000/", "application/json", responseBody)
+	if err != nil {
+		log.Fatalf("An Error Occured %v", err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	log.Default()
+	args := make(map[string]interface{})
+	json.Unmarshal(body, &args)
+	return Result{true, fmt.Sprintf("%v", args["counter"])}, nil
+}
+
+/*func ExecuteBeta() (Result, error) {
 	args := map[string]interface{}{
-		"counter": 3,
+		"counter": 0,
 		"xd":      "lol",
 	}
 	marsh, err := json.Marshal(args)
@@ -66,4 +85,4 @@ func ExecuteBeta() (Result, error) {
 	log.Default()
 	json.Unmarshal(body, &args)
 	return Result{true, fmt.Sprintf("%v", args["counter"])}, nil
-}
+}*/
