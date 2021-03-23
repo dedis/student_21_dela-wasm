@@ -1,0 +1,35 @@
+<!-- Not used anymore -->
+
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script src="wasm_exec.js"></script>
+
+
+
+    <p id="browserOutput"></p>
+    <script>
+        function init() {
+            console.log("initialising...")
+            const go = new Go();
+            async function fetchAndInstantiate() {
+                const response = await fetch("main.wasm");
+                const buffer = await response.arrayBuffer();
+                const thing = await WebAssembly.instantiate(buffer, go.importObject);
+                go.run(thing.instance);
+                var result = JSON.stringify(increaseCounter('{"counter":9,"xd":"lol"}'))
+                console.log(result)
+                document.getElementById("browserOutput").innerHTML = result;
+            }
+            fetchAndInstantiate()
+        }
+        init();
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>
