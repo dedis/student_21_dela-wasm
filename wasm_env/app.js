@@ -4,12 +4,19 @@ const url = require('url');
 const hostname = '127.0.0.1';
 const port = 3000;
 const wasm_exec = require("./wasm_exec.js")
+const factory = require('./c/api_example.js');
+
+factory().then((instance) => {
+  instance._sayHi(); // direct calling works
+  instance.ccall("sayHi"); // using ccall etc. also work
+  console.log(instance._daysInWeek()); // values can be returned, etc.
+});
 
 const go = new Go();
 
 async function fetchAndInstantiate() {
-  const buf = fs.readFileSync('./go/increaseCounter/main.wasm');
-  const thing = await WebAssembly.instantiate(buf, go.importObject);
+  var buf = fs.readFileSync('./go/increaseCounter/main.wasm');
+  var thing = await WebAssembly.instantiate(buf, go.importObject);
   go.run(thing.instance);
 }
 fetchAndInstantiate()
@@ -40,7 +47,16 @@ const server = http.createServer((req, res) => {
       }
       const data = buffer.toString()
       console.log(data)
-      const result = JSON.stringify(increaseCounter(data))
+      const jsonObj = JSON.parse(data)
+      let result
+      
+      switch (jsonObj.contractLanguage) {
+        case "go":
+          switch (jsonObj.contractName) {
+            case "increaseCounter":
+              result = JSON.stringify(increaseCounter(data))
+          }
+      }
 
       res.setHeader('Content-Type', 'application/json;charset=utf-8');
       res.end(result)

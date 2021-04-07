@@ -27,5 +27,6 @@ func increaseCounter(this js.Value, inputs []js.Value) interface{} {
 
 func main() {
 	js.Global().Set("increaseCounter", js.FuncOf(increaseCounter))
+	// Force the program to stay open by never sending to channel c
 	<-c
 }
