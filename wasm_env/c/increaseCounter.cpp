@@ -4,7 +4,7 @@
 #include <stdio.h>
 //#include <stdlib.h>
 
-// emcc increaseCounter.c -o increaseCounterC.js -I/usr/local/include/json-c -s  -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s MODULARIZE
+// emcc increaseCounter.cpp -o increaseCounterCPP.js -I/usr/local/include/json-c -s  -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s MODULARIZE
 // -s LINKABLE=1 -s EXPORT_ALL=1 
 
 #ifdef __cplusplus

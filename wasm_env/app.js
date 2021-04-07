@@ -4,13 +4,15 @@ const url = require('url');
 const hostname = '127.0.0.1';
 const port = 3000;
 const wasm_exec = require("./wasm_exec.js")
-const factory = require('./c/api_example.js');
+const factory = require('./c/increaseCounterC.js');
 
 factory().then((instance) => {
   instance._sayHi(); // direct calling works
   instance.ccall("sayHi"); // using ccall etc. also work
   console.log(instance._daysInWeek()); // values can be returned, etc.
+  console.log(instance._increaseCounterTest());
 });
+
 
 const go = new Go();
 
