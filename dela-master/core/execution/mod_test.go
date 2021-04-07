@@ -23,7 +23,9 @@ import (
 func TestExecute(t *testing.T) {
 	step := Step{}
 	args := map[string]interface{}{
-		"counter": 0,
+		"counter":          0,
+		"contractName":     "increaseCounter",
+		"contractLanguage": "go",
 	}
 	marsh, err := json.Marshal(args)
 	if err != nil {

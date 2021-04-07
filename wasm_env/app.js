@@ -8,7 +8,7 @@ const wasm_exec = require("./wasm_exec.js")
 const go = new Go();
 
 async function fetchAndInstantiate() {
-  const buf = fs.readFileSync('./smart_contract/main.wasm');
+  const buf = fs.readFileSync('./go/increaseCounter/main.wasm');
   const thing = await WebAssembly.instantiate(buf, go.importObject);
   go.run(thing.instance);
 }
