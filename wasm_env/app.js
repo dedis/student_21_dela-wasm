@@ -43,13 +43,16 @@ const server = http.createServer((req, res) => {
       console.log(data)
       const jsonObj = JSON.parse(data)
       let result
-      
+
       switch (jsonObj.contractLanguage) {
         case "go":
           switch (jsonObj.contractName) {
             case "increaseCounter":
               factory().then((instance) => {
-                console.log(instance._increaseCounterTest());
+                var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 4, \"contractName\" : \"increaseCounter\", \"contractLanguage\" : \"go\",}"), instance.ALLOC_NORMAL)
+                var resValue = instance.UTF8ToString(instance._increaseCounter(ptr));
+                instance._free(ptr);
+                console.log(resValue);
               });
               result = JSON.stringify(increaseCounter(data))
           }

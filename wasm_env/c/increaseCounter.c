@@ -1,8 +1,10 @@
-#include <json.h> // https://github.com/json-c/json-c
+#include <json.h> 
+// https://github.com/json-c/json-c , the emcc compilation only worked when the build directory (following the make instructions) is INSIDE the main one and not alongside it.
+// json-c was built using emconfigure and emmake.
 #include <emscripten/emscripten.h>
 #include <stdio.h>
 
-// emcc increaseCounter.c /Users/snufon/c/json-c/*.c -o increaseCounterC.js -I/Users/snufon/c/json-c -I/Users/snufon/c/json-c/json-c-build -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s MODULARIZE
+// emcc increaseCounter.c /Users/snufon/c/json-c/*.c -o increaseCounterC.js -I/Users/snufon/c/json-c -I/Users/snufon/c/json-c/json-c-build -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' -s EXTRA_EXPORTED_RUNTIME_METHODS='["allocate", "UTF8ToString", "intArrayFromString", "ALLOC_NORMAL"]' -s MODULARIZE
 #ifdef __cplusplus
 extern "C"
 {
@@ -19,13 +21,13 @@ extern "C"
     }
 
     EMSCRIPTEN_KEEPALIVE
-    int increaseCounterTest()
+    const char *increaseCounterTest()
     {
-        const char * str = increaseCounter("{ \"counter\" : 4, \"contractName\" : \"increaseCounter\", \"contractLanguage\" : \"go\",}");
+        const char *str = increaseCounter("{ \"counter\" : 4, \"contractName\" : \"increaseCounter\", \"contractLanguage\" : \"go\",}");
         struct json_object *jsonObj = json_tokener_parse(str);
         struct json_object *counter;
         json_object_object_get_ex(jsonObj, "counter", &counter);
-        return json_object_get_int(counter);
+        return json_object_to_json_string(jsonObj);
     }
 
 #ifdef __cplusplus
