@@ -6,14 +6,6 @@ const port = 3000;
 const wasm_exec = require("./wasm_exec.js")
 const factory = require('./c/increaseCounterC.js');
 
-factory().then((instance) => {
-  instance._sayHi(); // direct calling works
-  instance.ccall("sayHi"); // using ccall etc. also work
-  console.log(instance._daysInWeek()); // values can be returned, etc.
-  console.log(instance._increaseCounterTest());
-});
-
-
 const go = new Go();
 
 async function fetchAndInstantiate() {
@@ -56,6 +48,9 @@ const server = http.createServer((req, res) => {
         case "go":
           switch (jsonObj.contractName) {
             case "increaseCounter":
+              factory().then((instance) => {
+                console.log(instance._increaseCounterTest());
+              });
               result = JSON.stringify(increaseCounter(data))
           }
       }

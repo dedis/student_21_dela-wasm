@@ -1,12 +1,8 @@
-#include <json.h>
+#include <json.h> // https://github.com/json-c/json-c
 #include <emscripten/emscripten.h>
-//#include <string.h>
 #include <stdio.h>
-//#include <stdlib.h>
 
-// emcc increaseCounter.c -o increaseCounterC.js -I/usr/local/include/json-c -s  -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s MODULARIZE
-// -s LINKABLE=1 -s EXPORT_ALL=1 
-
+// emcc increaseCounter.c /Users/snufon/c/json-c/*.c -o increaseCounterC.js -I/Users/snufon/c/json-c -I/Users/snufon/c/json-c/json-c-build -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s MODULARIZE
 #ifdef __cplusplus
 extern "C"
 {
@@ -30,18 +26,6 @@ extern "C"
         struct json_object *counter;
         json_object_object_get_ex(jsonObj, "counter", &counter);
         return json_object_get_int(counter);
-    }
-
-    EMSCRIPTEN_KEEPALIVE
-    void sayHi()
-    {
-        printf("Hi!\n");
-    }
-
-    EMSCRIPTEN_KEEPALIVE
-    int daysInWeek()
-    {
-        return 7;
     }
 
 #ifdef __cplusplus
