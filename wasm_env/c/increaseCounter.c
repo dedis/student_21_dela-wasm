@@ -20,7 +20,7 @@ extern "C"
         return json_object_to_json_string(jsonObj);
     }
 
-    EMSCRIPTEN_KEEPALIVE
+    /*EMSCRIPTEN_KEEPALIVE
     const char *increaseCounterTest()
     {
         const char *str = increaseCounter("{ \"counter\" : 4, \"contractName\" : \"increaseCounter\", \"contractLanguage\" : \"go\",}");
@@ -28,7 +28,7 @@ extern "C"
         struct json_object *counter;
         json_object_object_get_ex(jsonObj, "counter", &counter);
         return json_object_to_json_string(jsonObj);
-    }
+    }*/
 
 #ifdef __cplusplus
 }

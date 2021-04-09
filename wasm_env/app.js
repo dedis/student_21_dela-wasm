@@ -12,8 +12,15 @@ async function fetchAndInstantiate() {
   var buf = fs.readFileSync('./go/increaseCounter/main.wasm');
   var thing = await WebAssembly.instantiate(buf, go.importObject);
   go.run(thing.instance);
+  increaseCounter('{"contractLanguage":"go","contractName":"increaseCounter","counter":50}')
 }
-fetchAndInstantiate()
+fetchAndInstantiate();
+
+factory().then((instance) => {
+  var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 0}"), instance.ALLOC_NORMAL)
+  result = instance.UTF8ToString(instance._increaseCounter(ptr));
+  instance._free(ptr);
+});
 
 const server = http.createServer((req, res) => {
   res.setHeader('Content-Type', 'application/json;charset=utf-8');
@@ -75,6 +82,7 @@ const server = http.createServer((req, res) => {
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+
 
 
 

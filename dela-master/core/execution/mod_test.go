@@ -2,6 +2,8 @@ package execution
 
 import (
 	"encoding/json"
+	"math/rand"
+	"strconv"
 	"testing"
 	"time"
 
@@ -21,9 +23,11 @@ import (
 }*/
 
 func TestIncreaseCounterGo(t *testing.T) {
+	rand.Seed(time.Now().UTC().UnixNano())
 	step := Step{}
+	var counter = rand.Intn(100)
 	args := map[string]interface{}{
-		"counter":          10,
+		"counter":          counter,
 		"contractName":     "increaseCounter",
 		"contractLanguage": "go",
 	}
@@ -41,15 +45,17 @@ func TestIncreaseCounterGo(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	require.Equal(t, "11", res.Message)
+	require.Equal(t, strconv.Itoa(counter+1), res.Message)
 	t.Log("Time in milliseconds :")
 	t.Log(float32(time.Now().Nanosecond()-past) / float32(1000000))
 }
 
 func TestIncreaseCounterC(t *testing.T) {
+	rand.Seed(time.Now().UTC().UnixNano())
 	step := Step{}
+	var counter = rand.Intn(100)
 	args := map[string]interface{}{
-		"counter":          2,
+		"counter":          counter,
 		"contractName":     "increaseCounter",
 		"contractLanguage": "c",
 	}
@@ -67,7 +73,7 @@ func TestIncreaseCounterC(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	require.Equal(t, "3", res.Message)
+	require.Equal(t, strconv.Itoa(counter+1), res.Message)
 	t.Log("Time in milliseconds :")
 	t.Log(float32(time.Now().Nanosecond()-past) / float32(1000000))
 }
