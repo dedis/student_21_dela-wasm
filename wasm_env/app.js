@@ -16,6 +16,7 @@ async function fetchAndInstantiate() {
 fetchAndInstantiate()
 
 const server = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'application/json;charset=utf-8');
   // partly from https://medium.com/bb-tutorials-and-thoughts/how-to-write-simple-nodejs-rest-api-with-core-http-module-dcedd2c1256
 
   const size = parseInt(req.headers['content-length'], 10)
@@ -48,19 +49,26 @@ const server = http.createServer((req, res) => {
         case "go":
           switch (jsonObj.contractName) {
             case "increaseCounter":
-              factory().then((instance) => {
-                var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 4, \"contractName\" : \"increaseCounter\", \"contractLanguage\" : \"go\",}"), instance.ALLOC_NORMAL)
-                var resValue = instance.UTF8ToString(instance._increaseCounter(ptr));
-                instance._free(ptr);
-                console.log(resValue);
-              });
               result = JSON.stringify(increaseCounter(data))
+              res.end(result)
+              console.log(result)
+              break;
           }
+          break;
+        case "c":
+          switch (jsonObj.contractName) {
+            case "increaseCounter":
+              factory().then((instance) => {
+                var ptr = instance.allocate(instance.intArrayFromString(data), instance.ALLOC_NORMAL)
+                result = instance.UTF8ToString(instance._increaseCounter(ptr));
+                instance._free(ptr);
+                res.end(result)
+                console.log(result)
+              });
+              break;
+          }
+          break;
       }
-
-      res.setHeader('Content-Type', 'application/json;charset=utf-8');
-      res.end(result)
-      console.log(result)
     })
 });
 
