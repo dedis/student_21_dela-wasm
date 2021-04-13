@@ -12,15 +12,24 @@ async function fetchAndInstantiate() {
   var buf = fs.readFileSync('./go/increaseCounter/main.wasm');
   var thing = await WebAssembly.instantiate(buf, go.importObject);
   go.run(thing.instance);
-  increaseCounter('{"contractLanguage":"go","contractName":"increaseCounter","counter":50}')
+  //increaseCounter('{"contractLanguage":"go","contractName":"increaseCounter","counter":50}')
 }
 fetchAndInstantiate();
 
-factory().then((instance) => {
+const go2 = new Go();
+
+async function fetchAndInstantiate2() {
+  var buf = fs.readFileSync('./go/ed25519/main.wasm');
+  var thing = await WebAssembly.instantiate(buf, go2.importObject);
+  go2.run(thing.instance);
+}
+fetchAndInstantiate2();
+
+/*factory().then((instance) => {
   var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 0}"), instance.ALLOC_NORMAL)
   result = instance.UTF8ToString(instance._increaseCounter(ptr));
   instance._free(ptr);
-});
+});*/
 
 const server = http.createServer((req, res) => {
   res.setHeader('Content-Type', 'application/json;charset=utf-8');
@@ -50,16 +59,21 @@ const server = http.createServer((req, res) => {
       const data = buffer.toString()
       console.log(data)
       const jsonObj = JSON.parse(data)
-      let result
 
       switch (jsonObj.contractLanguage) {
         case "go":
           switch (jsonObj.contractName) {
             case "increaseCounter":
-              result = JSON.stringify(increaseCounter(data))
+              var result = JSON.stringify(increaseCounter(data))
               res.end(result)
               console.log(result)
               break;
+            case "ed25519":
+              console.log(cryptoOp(data))
+              var result = JSON.stringify(cryptoOp(data))
+              res.end(result)
+              break;
+
           }
           break;
         case "c":
@@ -67,7 +81,7 @@ const server = http.createServer((req, res) => {
             case "increaseCounter":
               factory().then((instance) => {
                 var ptr = instance.allocate(instance.intArrayFromString(data), instance.ALLOC_NORMAL)
-                result = instance.UTF8ToString(instance._increaseCounter(ptr));
+                var result = instance.UTF8ToString(instance._increaseCounter(ptr));
                 instance._free(ptr);
                 res.end(result)
                 console.log(result)

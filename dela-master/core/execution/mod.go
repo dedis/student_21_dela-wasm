@@ -8,7 +8,6 @@ package execution
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -60,7 +59,8 @@ func (s *WASMService) Execute(snap store.Snapshot, step Step) (Result, error) {
 	log.Default()
 	args := make(map[string]interface{})
 	json.Unmarshal(body, &args)
-	return Result{true, fmt.Sprintf("%v", args["counter"])}, nil
+	return Result{true, args["result"].(string)}, nil
+	//return Result{true, fmt.Sprintf("%v", args["counter"])}, nil
 }
 
 /*func ExecuteBeta() (Result, error) {

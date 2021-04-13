@@ -1,4 +1,4 @@
-#include <json.h> 
+#include <json.h>
 // https://github.com/json-c/json-c , the emcc compilation only worked when the build directory (following the make instructions) is INSIDE the main one and not alongside it.
 // json-c was built using emconfigure and emmake.
 #include <emscripten/emscripten.h>
@@ -16,7 +16,11 @@ extern "C"
         struct json_object *counter;
         struct json_object *jsonObj = json_tokener_parse(str);
         json_object_object_get_ex(jsonObj, "counter", &counter);
-        json_object_set_int(counter, json_object_get_int(counter) + 1);
+        int num = json_object_get_int(counter) + 1;
+        int length = snprintf(NULL, 0, "%d", num);
+        char *value = malloc(length + 1);
+        snprintf(value, length+1, "%d", num);
+        json_object_object_add(jsonObj, "result", json_object_new_string(value));
         return json_object_to_json_string(jsonObj);
     }
 

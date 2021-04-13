@@ -4490,9 +4490,6 @@ var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__w
 var _increaseCounter = Module["_increaseCounter"] = createExportWrapper("increaseCounter");
 
 /** @type {function(...*):?} */
-var _increaseCounterTest = Module["_increaseCounterTest"] = createExportWrapper("increaseCounterTest");
-
-/** @type {function(...*):?} */
 var _malloc = Module["_malloc"] = createExportWrapper("malloc");
 
 /** @type {function(...*):?} */

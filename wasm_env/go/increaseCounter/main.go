@@ -21,7 +21,7 @@ func increaseCounter(this js.Value, inputs []js.Value) interface{} {
 	if err != nil {
 		return err
 	}
-	args["counter"] = counter + 1
+	args["result"] = strconv.Itoa(counter + 1)
 	return args
 }
 
