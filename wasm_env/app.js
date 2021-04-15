@@ -12,7 +12,7 @@ async function fetchAndInstantiate() {
   var buf = fs.readFileSync('./go/increaseCounter/main.wasm');
   var thing = await WebAssembly.instantiate(buf, go.importObject);
   go.run(thing.instance);
-  //increaseCounter('{"contractLanguage":"go","contractName":"increaseCounter","counter":50}')
+  increaseCounter('{"contractLanguage":"go","contractName":"increaseCounter","counter":50}')
 }
 fetchAndInstantiate();
 
@@ -22,14 +22,15 @@ async function fetchAndInstantiate2() {
   var buf = fs.readFileSync('./go/ed25519/main.wasm');
   var thing = await WebAssembly.instantiate(buf, go2.importObject);
   go2.run(thing.instance);
+  cryptoOp('{"contractLanguage":"go","contractName":"ed25519","point1":"Q6Fi2A7Ot69+ApLGfdjWyStCM2sHg5NnCzCuRmzm3ic=","point2":"JkKvN3MQYcmQxFGwOtpsD5zSHS5qFYEtM949b+Z3XMc=","scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}')
 }
 fetchAndInstantiate2();
 
-/*factory().then((instance) => {
+factory().then((instance) => {
   var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 0}"), instance.ALLOC_NORMAL)
   result = instance.UTF8ToString(instance._increaseCounter(ptr));
   instance._free(ptr);
-});*/
+});
 
 const server = http.createServer((req, res) => {
   res.setHeader('Content-Type', 'application/json;charset=utf-8');

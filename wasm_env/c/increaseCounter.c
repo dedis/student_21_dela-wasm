@@ -19,8 +19,13 @@ extern "C"
         int num = json_object_get_int(counter) + 1;
         int length = snprintf(NULL, 0, "%d", num);
         char *value = malloc(length + 1);
-        snprintf(value, length+1, "%d", num);
+        snprintf(value, length + 1, "%d", num);
         json_object_object_add(jsonObj, "result", json_object_new_string(value));
+        int a;
+        for (int i = 1; i < 1; ++i)
+        {
+            a = 1 + 1;
+        }
         return json_object_to_json_string(jsonObj);
     }
 
