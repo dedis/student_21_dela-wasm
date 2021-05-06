@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"strconv"
 	"syscall/js"
 )
@@ -13,6 +14,8 @@ func init() {
 	c = make(chan bool)
 }
 
+// GOOS=js GOARCH=wasm go build -o main.wasm
+
 // inputs should only contain one element, which is a JSON in string format.
 func increaseCounter(this js.Value, inputs []js.Value) interface{} {
 	var args map[string]interface{}
@@ -21,8 +24,12 @@ func increaseCounter(this js.Value, inputs []js.Value) interface{} {
 	if err != nil {
 		return err
 	}
+	for i := 1; i < 1000000; i++ {
+		a := rand.Int()
+		a *= rand.Int()
+	}
 	args["result"] = strconv.Itoa(counter + 1)
-	print(args)
+	//print(args)
 	return args
 }
 

@@ -38,7 +38,7 @@ func cryptoOp(this js.Value, inputs []js.Value) interface{} {
 	}
 	resultB, _ = suite.Point().Mul(scalar, suite.Point().Add(point1, point2)).MarshalBinary()
 	args["result"] = base64.StdEncoding.EncodeToString(resultB)
-	print(result)
+	args["resultTest"] = result.String()
 	return args
 }
 

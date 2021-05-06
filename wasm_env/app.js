@@ -4,7 +4,8 @@ const url = require('url');
 const hostname = '127.0.0.1';
 const port = 3000;
 const wasm_exec = require("./wasm_exec.js")
-const factory = require('./c/increaseCounterC.js');
+const increaseCounterC = require('./c/increaseCounterC.js');
+const ed25519C = require('./c/ed25519.js');
 
 const go = new Go();
 
@@ -12,7 +13,7 @@ async function fetchAndInstantiate() {
   var buf = fs.readFileSync('./go/increaseCounter/main.wasm');
   var thing = await WebAssembly.instantiate(buf, go.importObject);
   go.run(thing.instance);
-  increaseCounter('{"contractLanguage":"go","contractName":"increaseCounter","counter":50}')
+  increaseCounter('{"counter":50}')
 }
 fetchAndInstantiate();
 
@@ -22,15 +23,33 @@ async function fetchAndInstantiate2() {
   var buf = fs.readFileSync('./go/ed25519/main.wasm');
   var thing = await WebAssembly.instantiate(buf, go2.importObject);
   go2.run(thing.instance);
-  cryptoOp('{"contractLanguage":"go","contractName":"ed25519","point1":"Q6Fi2A7Ot69+ApLGfdjWyStCM2sHg5NnCzCuRmzm3ic=","point2":"JkKvN3MQYcmQxFGwOtpsD5zSHS5qFYEtM949b+Z3XMc=","scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}')
+  cryptoOp('{"point1":"Q6Fi2A7Ot69+ApLGfdjWyStCM2sHg5NnCzCuRmzm3ic=","point2":"JkKvN3MQYcmQxFGwOtpsD5zSHS5qFYEtM949b+Z3XMc=","scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}')
 }
 fetchAndInstantiate2();
 
-factory().then((instance) => {
+const go3 = new Go();
+
+async function fetchAndInstantiate3() {
+  var buf = fs.readFileSync('./go/randFloatMul/randFloatMul.wasm');
+  var thing = await WebAssembly.instantiate(buf, go3.importObject);
+  go3.run(thing.instance);
+  console.log(JSON.stringify(randFloatMul('{"rand1":"3.14159265359","rand2":"3.14159265359"}')))
+}
+fetchAndInstantiate3();
+
+increaseCounterC().then((instance) => {
   var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 0}"), instance.ALLOC_NORMAL)
   result = instance.UTF8ToString(instance._increaseCounter(ptr));
   instance._free(ptr);
+  console.log("Warm up done.")
 });
+
+// ed25519C().then((instance) => {
+//   var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 0}"), instance.ALLOC_NORMAL)
+//   result = instance.UTF8ToString(instance._cryptoOp(ptr));
+//   instance._free(ptr);
+//   console.log(result)
+// });
 
 const server = http.createServer((req, res) => {
   res.setHeader('Content-Type', 'application/json;charset=utf-8');
@@ -67,7 +86,6 @@ const server = http.createServer((req, res) => {
             case "increaseCounter":
               var result = JSON.stringify(increaseCounter(data))
               res.end(result)
-              console.log(result)
               break;
             case "ed25519":
               console.log(cryptoOp(data))
@@ -80,9 +98,18 @@ const server = http.createServer((req, res) => {
         case "c":
           switch (jsonObj.contractName) {
             case "increaseCounter":
-              factory().then((instance) => {
+              increaseCounterC().then((instance) => {
                 var ptr = instance.allocate(instance.intArrayFromString(data), instance.ALLOC_NORMAL)
                 var result = instance.UTF8ToString(instance._increaseCounter(ptr));
+                instance._free(ptr);
+                res.end(result)
+                console.log(result)
+              });
+              break;
+            case "ed25519":
+              ed25519C().then((instance) => {
+                var ptr = instance.allocate(instance.intArrayFromString(data), instance.ALLOC_NORMAL)
+                var result = instance.UTF8ToString(instance._cryptoOp(ptr));
                 instance._free(ptr);
                 res.end(result)
                 console.log(result)
