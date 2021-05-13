@@ -9,6 +9,8 @@ import (
 	"go.dedis.ch/kyber/v4/suites"
 )
 
+// GOOS=js GOARCH=wasm go build -o main.wasm
+
 var c chan bool
 
 func init() {
@@ -39,6 +41,7 @@ func cryptoOp(this js.Value, inputs []js.Value) interface{} {
 	resultB, _ = suite.Point().Mul(scalar, suite.Point().Add(point1, point2)).MarshalBinary()
 	args["result"] = base64.StdEncoding.EncodeToString(resultB)
 	args["resultTest"] = result.String()
+	args["Accepted"] = "true"
 	return args
 }
 

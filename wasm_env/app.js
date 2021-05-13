@@ -27,7 +27,7 @@ async function fetchAndInstantiate2() {
 }
 fetchAndInstantiate2();
 
-const go3 = new Go();
+/* const go3 = new Go();
 
 async function fetchAndInstantiate3() {
   var buf = fs.readFileSync('./go/randFloatMul/randFloatMul.wasm');
@@ -35,7 +35,7 @@ async function fetchAndInstantiate3() {
   go3.run(thing.instance);
   console.log(JSON.stringify(randFloatMul('{"rand1":"3.14159265359","rand2":"3.14159265359"}')))
 }
-fetchAndInstantiate3();
+fetchAndInstantiate3(); */
 
 increaseCounterC().then((instance) => {
   var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 0}"), instance.ALLOC_NORMAL)

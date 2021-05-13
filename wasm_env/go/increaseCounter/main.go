@@ -28,6 +28,7 @@ func increaseCounter(this js.Value, inputs []js.Value) interface{} {
 		a := rand.Int()
 		a *= rand.Int()
 	}
+	args["Accepted"] = "true"
 	args["result"] = strconv.Itoa(counter + 1)
 	//print(args)
 	return args

@@ -44,7 +44,9 @@ func TestIncreaseCounterGo(t *testing.T) {
 	var past = time.Now()
 
 	res, err := srvc.Execute(nil, step)
+
 	duration := time.Since(past).Nanoseconds()
+	//t.Log(res)
 	if err != nil {
 		t.Error(err)
 	}
@@ -74,6 +76,7 @@ func TestIncreaseCounterC(t *testing.T) {
 
 	res, err := srvc.Execute(nil, step)
 	duration := time.Since(past).Nanoseconds()
+	t.Log(res)
 	if err != nil {
 		t.Error(err)
 	}
@@ -112,6 +115,7 @@ func TestCryptoOp(t *testing.T) {
 
 	res, err := srvc.Execute(nil, step)
 	duration := time.Since(past).Nanoseconds()
+	t.Log(res)
 	if err != nil {
 		t.Error(err)
 	}

@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"strconv"
 	"syscall/js"
-	"time"
 )
 
 var c chan bool
@@ -29,8 +28,9 @@ func randFloatMul(this js.Value, inputs []js.Value) interface{} {
 	if err2 != nil {
 		return err
 	}
+	args["Accepted"] = "true"
 	args["result"] = strconv.FormatFloat(rand1*rand2, 'E', -1, 64)
-	rand.Seed(time.Now().UTC().UnixNano())
+	//rand.Seed(time.Now().UTC().UnixNano())
 	args["random"] = strconv.Itoa(rand.Intn(100))
 	return args
 }
