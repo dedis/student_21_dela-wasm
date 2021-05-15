@@ -44,12 +44,12 @@ increaseCounterC().then((instance) => {
   console.log("Warm up done.")
 });
 
-// ed25519C().then((instance) => {
-//   var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 0}"), instance.ALLOC_NORMAL)
-//   result = instance.UTF8ToString(instance._cryptoOp(ptr));
-//   instance._free(ptr);
-//   console.log(result)
-// });
+ed25519C().then((instance) => {
+  var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 0}"), instance.ALLOC_NORMAL)
+  result = instance.UTF8ToString(instance._cryptoOp(ptr));
+  instance._free(ptr);
+  console.log(result)
+});
 
 const server = http.createServer((req, res) => {
   res.setHeader('Content-Type', 'application/json;charset=utf-8');
