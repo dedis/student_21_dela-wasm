@@ -41,14 +41,15 @@ increaseCounterC().then((instance) => {
   var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 0}"), instance.ALLOC_NORMAL)
   result = instance.UTF8ToString(instance._increaseCounter(ptr));
   instance._free(ptr);
-  console.log("Warm up done.")
+  //console.log(result)
 });
 
 ed25519C().then((instance) => {
-  var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 0}"), instance.ALLOC_NORMAL)
+  var ptr = instance.allocate(instance.intArrayFromString('{"point1":"Q6Fi2A7Ot69+ApLGfdjWyStCM2sHg5NnCzCuRmzm3ic=","point2":"JkKvN3MQYcmQxFGwOtpsD5zSHS5qFYEtM949b+Z3XMc=","scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}'), instance.ALLOC_NORMAL)
   result = instance.UTF8ToString(instance._cryptoOp(ptr));
   instance._free(ptr);
-  console.log(result)
+  //console.log(result)
+  console.log("Warm up done.")
 });
 
 const server = http.createServer((req, res) => {
