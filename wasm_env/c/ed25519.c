@@ -8,11 +8,73 @@
 // json-c was built using emconfigure and emmake.
 #include <emscripten/emscripten.h>
 #include <stdio.h>
+#include <stdlib.h>
 //#include "b64.h"
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+    unsigned char *rand_bytes(size_t num_bytes)
+    {
+        unsigned char *stream = malloc(num_bytes);
+        size_t i;
+
+        for (i = 0; i < num_bytes; i++)
+        {
+            stream[i] = rand();
+        }
+
+        return stream;
+    }
+
+    int
+    custom_is_zero(const unsigned char *n, const size_t nlen)
+    {
+        size_t i;
+        volatile unsigned char d = 0U;
+
+        for (i = 0U; i < nlen; i++)
+        {
+            d |= n[i];
+        }
+        return 1 & ((d - 1) >> 8);
+    }
+
+    int
+    custom_is_canonical(const unsigned char s[32])
+    {
+        /* 2^252+27742317777372353535851937790883648493 */
+        static const unsigned char L[32] = {
+            0xed, 0xd3, 0xf5, 0x5c, 0x1a, 0x63, 0x12, 0x58, 0xd6, 0x9c, 0xf7,
+            0xa2, 0xde, 0xf9, 0xde, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10};
+        unsigned char c = 0;
+        unsigned char n = 1;
+        unsigned int i = 32;
+
+        do
+        {
+            i--;
+            c |= ((s[i] - L[i]) >> 8) & n;
+            n &= ((s[i] ^ L[i]) - 1) >> 8;
+        } while (i != 0);
+
+        return (c != 0);
+    }
+
+    unsigned char *
+    rand_scalar(size_t num_bytes)
+    {
+        unsigned char *r = malloc(num_bytes);
+        do
+        {
+            r = rand_bytes(crypto_core_ed25519_SCALARBYTES);
+            r[crypto_core_ed25519_SCALARBYTES - 1] &= 0x1f;
+        } while (custom_is_canonical(r) == 0 ||
+                 custom_is_zero(r, crypto_core_ed25519_SCALARBYTES));
+        return r;
+    }
 
     EMSCRIPTEN_KEEPALIVE
     const char *cryptoOp(const char *str)
@@ -29,34 +91,40 @@ extern "C"
 
         for (int i = 0; i < 1000; ++i)
         {
-            unsigned char point1[crypto_box_PUBLICKEYBYTES];
-            unsigned char point2[crypto_box_PUBLICKEYBYTES];
             unsigned char point[crypto_box_PUBLICKEYBYTES];
             unsigned char pointf[crypto_box_PUBLICKEYBYTES];
-            unsigned char scalar[crypto_scalarmult_BYTES];
-            unsigned char bytes[] = {0x46, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30};
-            unsigned char bytes2[] = {0x49, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30};
-            crypto_core_ed25519_add(point, bytes, bytes2);
+            unsigned char *x = rand_bytes(32U); // {0x46, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30};
+            unsigned char *y = rand_bytes(32U);
+            unsigned char *scalar = rand_scalar(32U);
+            unsigned char px[crypto_core_ed25519_BYTES];
+            crypto_core_ed25519_from_uniform(px, x);
+            unsigned char py[crypto_core_ed25519_BYTES];
+            crypto_core_ed25519_from_uniform(py, y);
+
+            crypto_core_ed25519_add(point, px, py);
+            crypto_core_ed25519_scalar_mul(pointf, point, scalar);
             /* randombytes_buf(point1, sizeof point1);
             randombytes_buf(point2, sizeof point2);
             randombytes_buf(scalar, sizeof scalar);
             crypto_core_ed25519_add(point, point1, point2);
             crypto_scalarmult_curve25519(pointf, scalar, point); */
         }
-
-        unsigned char point1[crypto_box_PUBLICKEYBYTES];
-        unsigned char point2[crypto_box_PUBLICKEYBYTES];
         unsigned char point[crypto_box_PUBLICKEYBYTES];
         unsigned char pointf[crypto_box_PUBLICKEYBYTES];
-        unsigned char scalar[crypto_scalarmult_BYTES];
-        unsigned char bytes[] = {0x46, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30};
-        unsigned char bytes2[] = {0x49, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30};
-        int a = crypto_core_ed25519_add(point, bytes, bytes2);
+        unsigned char *x = rand_bytes(32U); // {0x46, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30};
+        unsigned char *y = rand_bytes(32U);
+        unsigned char *scalar = rand_scalar(32U);
+        unsigned char px[crypto_core_ed25519_BYTES];
+        crypto_core_ed25519_from_uniform(px, x);
+        unsigned char py[crypto_core_ed25519_BYTES];
+        crypto_core_ed25519_from_uniform(py, y);
+
+        int a = crypto_core_ed25519_add(point, px, py);
+        crypto_core_ed25519_scalar_mul(pointf, point, scalar);
         int length = snprintf(NULL, 0, "%d", a);
         char *value = malloc(length + 1);
         snprintf(value, length + 1, "%d", a);
         json_object_object_add(jsonObj, "result", json_object_new_string(value));
-        json_object_object_add(jsonObj, "message", json_object_new_string("true"));
 
         /* unsigned char *client_secretkey = malloc(crypto_box_SECRETKEYBYTES);
         unsigned char bytes[] = {0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30};
