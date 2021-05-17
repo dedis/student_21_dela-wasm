@@ -98,7 +98,7 @@ extern "C"
         unsigned char py[crypto_core_ed25519_BYTES];
         crypto_core_ed25519_from_uniform(py, y);
 
-        for (int i = 0; i < 10000; ++i)
+        for (int i = 0; i < 1000000; ++i)
         {
             //crypto_core_ed25519_add(point, px, py);
             crypto_core_ed25519_scalar_mul(pointf, px, scalar);
