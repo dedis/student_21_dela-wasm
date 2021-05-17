@@ -1,6 +1,5 @@
-// emcc ed25519.c /Users/snufon/c/json-c/*.c /Users/snufon/libsodium/randombytes/*.c /Users/snufon/libsodium/crypto_scalarmult/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10/*.c /Users/snufon/libsodium/crypto_scalarmult/*.c -o ed25519.js -I/Users/snufon/libsodium/include -I/Users/snufon/libsodium/include/sodium -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c/json-c-build -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_25_5 -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_51 -I/Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10 -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' -s EXPORTED_RUNTIME_METHODS='["allocate", "UTF8ToString", "intArrayFromString", "ALLOC_NORMAL"]' -s MODULARIZE
-
 // emcc ed25519.c /Users/snufon/c/json-c/*.c /Users/snufon/libsodium/sodium/utils.c /Users/snufon/libsodium/randombytes/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10/*.c /Users/snufon/libsodium/crypto_core/ed25519/ref10/*.c /Users/snufon/libsodium/crypto_core/ed25519/*.c  -o ed25519.js -I/Users/snufon/libsodium/include -I/Users/snufon/libsodium/include/sodium -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c/json-c-build -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_25_5 -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_51 -I/Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10 -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' -s EXPORTED_RUNTIME_METHODS='["allocate", "UTF8ToString", "intArrayFromString", "ALLOC_NORMAL"]' -s MODULARIZE
+
 // /Users/snufon/deps/b64/*.c -I/Users/snufon/deps/b64
 #include <json.h>
 #include <sodium.h>
@@ -89,26 +88,6 @@ extern "C"
         struct json_object *jsonObj = json_tokener_parse(str);
         json_object_object_add(jsonObj, "Accepted", json_object_new_string("true"));
 
-        for (int i = 0; i < 1000; ++i)
-        {
-            unsigned char point[crypto_box_PUBLICKEYBYTES];
-            unsigned char pointf[crypto_box_PUBLICKEYBYTES];
-            unsigned char *x = rand_bytes(32U); // {0x46, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30};
-            unsigned char *y = rand_bytes(32U);
-            unsigned char *scalar = rand_scalar(32U);
-            unsigned char px[crypto_core_ed25519_BYTES];
-            crypto_core_ed25519_from_uniform(px, x);
-            unsigned char py[crypto_core_ed25519_BYTES];
-            crypto_core_ed25519_from_uniform(py, y);
-
-            crypto_core_ed25519_add(point, px, py);
-            crypto_core_ed25519_scalar_mul(pointf, point, scalar);
-            /* randombytes_buf(point1, sizeof point1);
-            randombytes_buf(point2, sizeof point2);
-            randombytes_buf(scalar, sizeof scalar);
-            crypto_core_ed25519_add(point, point1, point2);
-            crypto_scalarmult_curve25519(pointf, scalar, point); */
-        }
         unsigned char point[crypto_box_PUBLICKEYBYTES];
         unsigned char pointf[crypto_box_PUBLICKEYBYTES];
         unsigned char *x = rand_bytes(32U); // {0x46, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30};
@@ -118,6 +97,12 @@ extern "C"
         crypto_core_ed25519_from_uniform(px, x);
         unsigned char py[crypto_core_ed25519_BYTES];
         crypto_core_ed25519_from_uniform(py, y);
+
+        for (int i = 0; i < 10000; ++i)
+        {
+            //crypto_core_ed25519_add(point, px, py);
+            crypto_core_ed25519_scalar_mul(pointf, px, scalar);
+        }
 
         int a = crypto_core_ed25519_add(point, px, py);
         crypto_core_ed25519_scalar_mul(pointf, point, scalar);
