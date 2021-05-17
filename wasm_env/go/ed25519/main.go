@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"syscall/js"
 
-	"go.dedis.ch/kyber/v4"
 	"go.dedis.ch/kyber/v4/suites"
 )
 
 // GOOS=js GOARCH=wasm go build -o main.wasm
+
+// add : 46         both 10k ops
+// mult : 6406
 
 var c chan bool
 
@@ -34,13 +36,14 @@ func cryptoOp(this js.Value, inputs []js.Value) interface{} {
 	point1.UnmarshalBinary([]byte(args["point1"].(string)))
 	point2.UnmarshalBinary([]byte(args["point2"].(string)))
 	var resultB []byte
-	var result kyber.Point
-	for i := 0; i < 1000; i++ {
-		result = suite.Point().Mul(scalar, point1)
+	//var result kyber.Point
+	for i := 0; i < 10000; i++ {
+		//result = suite.Point().Mul(scalar, point1)
+		suite.Point().Add(point1, point2)
 	}
 	resultB, _ = suite.Point().Mul(scalar, suite.Point().Add(point1, point2)).MarshalBinary()
 	args["result"] = base64.StdEncoding.EncodeToString(resultB)
-	args["resultTest"] = result.String()
+	//args["resultTest"] = result.String()
 	args["Accepted"] = "true"
 	return args
 }
