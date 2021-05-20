@@ -10,8 +10,13 @@ import (
 
 // GOOS=js GOARCH=wasm go build -o main.wasm
 
-// add : 46         both 10k ops
+// WASM
+// add : 30         both 10k ops
 // mult : 6406
+
+// NATIVE
+// add : 6
+// mult : 1500
 
 var c chan bool
 
@@ -38,8 +43,8 @@ func cryptoOp(this js.Value, inputs []js.Value) interface{} {
 	var resultB []byte
 	//var result kyber.Point
 	for i := 0; i < 10000; i++ {
-		//result = suite.Point().Mul(scalar, point1)
-		suite.Point().Add(point1, point2)
+		suite.Point().Mul(scalar, point1)
+		//suite.Point().Add(point1, point2)
 	}
 	resultB, _ = suite.Point().Mul(scalar, suite.Point().Add(point1, point2)).MarshalBinary()
 	args["result"] = base64.StdEncoding.EncodeToString(resultB)

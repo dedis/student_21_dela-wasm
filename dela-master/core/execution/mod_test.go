@@ -122,6 +122,16 @@ func TestCryptoOp(t *testing.T) {
 	require.Equal(t, base64.StdEncoding.EncodeToString(resultB), res.Message)
 	t.Log("Time in milliseconds :")
 	t.Log(float32(duration) / float32(1000000))
+
+	past = time.Now()
+
+	for i := 0; i < 10000; i++ {
+		//suite.Point().Mul(scalar, point1)
+		suite.Point().Add(point1, point2)
+	}
+	duration = time.Since(past).Nanoseconds()
+	t.Log("Time in milliseconds native :")
+	t.Log(float32(duration) / float32(1000000))
 }
 
 func TestCryptoOpC(t *testing.T) {
