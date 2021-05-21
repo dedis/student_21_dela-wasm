@@ -23,14 +23,14 @@ extern "C"
         snprintf(value, length + 1, "%d", num);
         json_object_object_add(jsonObj, "result", json_object_new_string(value));
         json_object_object_add(jsonObj, "Accepted", json_object_new_string("true"));
-        int a;
+        /* int a;
         //srand(time(NULL)); // Initialization, should only be called once.
         for (int i = 1; i < 1000000; ++i)
         {
             a = rand();
             a *= rand();
             printf("%d", a);
-        }
+        } */
         return json_object_to_json_string(jsonObj);
     }
 

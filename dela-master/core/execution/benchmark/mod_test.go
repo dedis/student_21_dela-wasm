@@ -52,6 +52,31 @@ func BenchmarkWASM_Go_Increment(b *testing.B) {
 	}
 }
 
+func BenchmarkWASM_C_Increment(b *testing.B) {
+	n := iterations
+
+	for i := 0; i < n; i++ {
+		var counter = 0
+		args := map[string]interface{}{
+			"counter":          counter,
+			"contractName":     "increaseCounter",
+			"contractLanguage": "c",
+		}
+		marsh, err := json.Marshal(args)
+		if err != nil {
+			b.Error(err)
+		}
+		step := execution.Step{}
+		step.Current = fakeTx{json: marsh}
+		srvc := execution.WASMService{}
+		_, err = srvc.Execute(nil, step)
+		if err != nil {
+			b.Logf("failed to execute: %+v", err)
+			b.FailNow()
+		}
+	}
+}
+
 // Simple crypto (Elliptic curve - EC) benchmarks
 
 func BenchmarkNative_EC(b *testing.B) {
