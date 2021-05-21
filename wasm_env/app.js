@@ -37,6 +37,26 @@ async function fetchAndInstantiate3() {
 }
 fetchAndInstantiate3(); */
 
+const go4 = new Go();
+
+async function fetchAndInstantiate4() {
+  var buf = fs.readFileSync('./go/simpleEC/simpleEC.wasm');
+  var thing = await WebAssembly.instantiate(buf, go4.importObject);
+  go4.run(thing.instance);
+  simpleEC('{"scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}');
+}
+fetchAndInstantiate4();
+
+const go5 = new Go();
+
+async function fetchAndInstantiate5() {
+  var buf = fs.readFileSync('./go/ed25519_mul/ed25519_mul.wasm');
+  var thing = await WebAssembly.instantiate(buf, go5.importObject);
+  go5.run(thing.instance);
+  ed25519_mul('{"point1":"Q6Fi2A7Ot69+ApLGfdjWyStCM2sHg5NnCzCuRmzm3ic=", "scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}')
+}
+fetchAndInstantiate5();
+
 increaseCounterC().then((instance) => {
   var ptr = instance.allocate(instance.intArrayFromString("{ \"counter\" : 0}"), instance.ALLOC_NORMAL)
   result = instance.UTF8ToString(instance._increaseCounter(ptr));
@@ -78,7 +98,7 @@ const server = http.createServer((req, res) => {
         return
       }
       const data = buffer.toString()
-      console.log(data)
+      //console.log(data)
       const jsonObj = JSON.parse(data)
 
       switch (jsonObj.contractLanguage) {
@@ -89,11 +109,17 @@ const server = http.createServer((req, res) => {
               res.end(result)
               break;
             case "ed25519":
-              console.log(cryptoOp(data))
               var result = JSON.stringify(cryptoOp(data))
               res.end(result)
               break;
-
+            case "ed25519_mul":
+              var result = JSON.stringify(ed25519_mul(data))
+              res.end(result)
+              break;
+            case "simpleEC":
+              var result = JSON.stringify(simpleEC(data))
+              res.end(result)
+              break;
           }
           break;
         case "c":

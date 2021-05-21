@@ -88,16 +88,13 @@ func TestIncreaseCounterC(t *testing.T) {
 func TestCryptoOp(t *testing.T) {
 	var suite = suites.MustFind("Ed25519")
 	step := Step{}
-	scalar := suite.Scalar().Pick(suite.RandomStream())
 	point1 := suite.Point().Pick(suite.RandomStream())
 	point2 := suite.Point().Pick(suite.RandomStream())
-	resultB, _ := suite.Point().Mul(scalar, suite.Point().Add(point1, point2)).MarshalBinary()
-	scalarB, _ := scalar.MarshalBinary()
+	resultB, _ := suite.Point().Add(point1, point2).MarshalBinary()
 	point1B, _ := point1.MarshalBinary()
 	point2B, _ := point2.MarshalBinary()
 	// encoding to base64 because JSON does not support raw bytes
 	args := map[string]interface{}{
-		"scalar":           base64.StdEncoding.EncodeToString(scalarB),
 		"point1":           base64.StdEncoding.EncodeToString(point1B),
 		"point2":           base64.StdEncoding.EncodeToString(point2B),
 		"contractName":     "ed25519",
@@ -125,9 +122,55 @@ func TestCryptoOp(t *testing.T) {
 
 	past = time.Now()
 
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 1; i++ {
 		//suite.Point().Mul(scalar, point1)
 		suite.Point().Add(point1, point2)
+	}
+	duration = time.Since(past).Nanoseconds()
+	t.Log("Time in milliseconds native :")
+	t.Log(float32(duration) / float32(1000000))
+}
+
+func TestEd25519_mul(t *testing.T) {
+	var suite = suites.MustFind("Ed25519")
+	step := Step{}
+	point1 := suite.Point().Pick(suite.RandomStream())
+	scalar := suite.Scalar().Pick(suite.RandomStream())
+	resultB, _ := suite.Point().Mul(scalar, point1).MarshalBinary()
+	point1B, _ := point1.MarshalBinary()
+	scalarB, _ := scalar.MarshalBinary()
+	// encoding to base64 because JSON does not support raw bytes
+	args := map[string]interface{}{
+		"point1":           base64.StdEncoding.EncodeToString(point1B),
+		"scalar":           base64.StdEncoding.EncodeToString(scalarB),
+		"contractName":     "ed25519_mul",
+		"contractLanguage": "go",
+	}
+	marsh, err := json.Marshal(args)
+	if err != nil {
+		t.Error(err)
+	}
+	step.Current = fakeTx{json: marsh}
+
+	srvc := WASMService{}
+
+	past := time.Now()
+
+	res, err := srvc.Execute(nil, step)
+	duration := time.Since(past).Nanoseconds()
+	//t.Log(res)
+	if err != nil {
+		t.Error(err)
+	}
+	require.Equal(t, base64.StdEncoding.EncodeToString(resultB), res.Message)
+	t.Log("Time in milliseconds :")
+	t.Log(float32(duration) / float32(1000000))
+
+	past = time.Now()
+
+	for i := 0; i < 1; i++ {
+		//suite.Point().Mul(scalar, point1)
+		suite.Point().Mul(scalar, point1)
 	}
 	duration = time.Since(past).Nanoseconds()
 	t.Log("Time in milliseconds native :")

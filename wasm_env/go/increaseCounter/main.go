@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"strconv"
 	"syscall/js"
 )
@@ -24,10 +23,10 @@ func increaseCounter(this js.Value, inputs []js.Value) interface{} {
 	if err != nil {
 		return err
 	}
-	for i := 1; i < 1000000; i++ {
+	/* for i := 1; i < 1000000; i++ {
 		a := rand.Int()
 		a *= rand.Int()
-	}
+	} */
 	args["Accepted"] = "true"
 	args["result"] = strconv.Itoa(counter + 1)
 	//print(args)
