@@ -4,12 +4,17 @@ const url = require('url');
 const hostname = '127.0.0.1';
 const port = 3000;
 const wasm_exec = require("./wasm_exec.js")
+
+// JavaScript glue code which runs the WASM binaries
 const increaseCounterC = require('./c/increaseCounterC.js');
-const ed25519C = require('./c/ed25519.js');
+const ed25519C_add = require('./c/ed25519.js');
 const ed25519C_mul = require('./c/ed25519_mul.js');
 
-const go = new Go();
 
+//// GO INSTANTIATIONS & WARM UPS
+
+// Increase Counter
+const go = new Go();
 async function fetchAndInstantiate() {
   var buf = fs.readFileSync('./go/increaseCounter/main.wasm');
   var thing = await WebAssembly.instantiate(buf, go.importObject);
@@ -18,8 +23,8 @@ async function fetchAndInstantiate() {
 }
 fetchAndInstantiate();
 
+// Addition(s) of 2 points on Ed25519
 const go2 = new Go();
-
 async function fetchAndInstantiate2() {
   var buf = fs.readFileSync('./go/ed25519/main.wasm');
   var thing = await WebAssembly.instantiate(buf, go2.importObject);
@@ -28,8 +33,8 @@ async function fetchAndInstantiate2() {
 }
 fetchAndInstantiate2();
 
-/* const go3 = new Go();
 
+/* const go3 = new Go();
 async function fetchAndInstantiate3() {
   var buf = fs.readFileSync('./go/randFloatMul/randFloatMul.wasm');
   var thing = await WebAssembly.instantiate(buf, go3.importObject);
@@ -38,8 +43,8 @@ async function fetchAndInstantiate3() {
 }
 fetchAndInstantiate3(); */
 
+// Scalar multiplication(s) of the generator
 const go4 = new Go();
-
 async function fetchAndInstantiate4() {
   var buf = fs.readFileSync('./go/simpleEC/simpleEC.wasm');
   var thing = await WebAssembly.instantiate(buf, go4.importObject);
@@ -48,8 +53,8 @@ async function fetchAndInstantiate4() {
 }
 fetchAndInstantiate4();
 
+// Scalar multiplication(s) of a point on the ed25519 curve
 const go5 = new Go();
-
 async function fetchAndInstantiate5() {
   var buf = fs.readFileSync('./go/ed25519_mul/ed25519_mul.wasm');
   var thing = await WebAssembly.instantiate(buf, go5.importObject);
@@ -58,22 +63,18 @@ async function fetchAndInstantiate5() {
 }
 fetchAndInstantiate5();
 
+//// C INSTANTIATIONS
 increaseCounterC().then((instanceCounter) => {
-  ed25519C().then((instance_ed25519_add) => {
+  ed25519C_add().then((instance_ed25519_add) => {
     ed25519C_mul().then((instance_ed25519_mul) => {
 
-
+      // Simple Rest API, with help from https://medium.com/bb-tutorials-and-thoughts/how-to-write-simple-nodejs-rest-api-with-core-http-module-dcedd2c1256
 
       const server = http.createServer((req, res) => {
         res.setHeader('Content-Type', 'application/json;charset=utf-8');
-        // partly from https://medium.com/bb-tutorials-and-thoughts/how-to-write-simple-nodejs-rest-api-with-core-http-module-dcedd2c1256
-
         const size = parseInt(req.headers['content-length'], 10)
         const buffer = Buffer.allocUnsafe(size)
         var pos = 0
-
-        //console.log(req.headers)
-
         req
           .on('data', (chunk) => {
             const offset = pos + chunk.length
@@ -90,10 +91,10 @@ increaseCounterC().then((instanceCounter) => {
               return
             }
             const data = buffer.toString()
-            //console.log(data)
             const jsonObj = JSON.parse(data)
 
             switch (jsonObj.contractLanguage) {
+              
               case "go":
                 switch (jsonObj.contractName) {
                   case "increaseCounter":
@@ -114,16 +115,15 @@ increaseCounterC().then((instanceCounter) => {
                     break;
                 }
                 break;
+
               case "c":
                 switch (jsonObj.contractName) {
                   case "increaseCounter":
-                    //increaseCounterC().then((instance) => {
                     var ptr = instanceCounter.allocate(instanceCounter.intArrayFromString(data), instanceCounter.ALLOC_NORMAL)
                     var result = instanceCounter.UTF8ToString(instanceCounter._increaseCounter(ptr));
                     instanceCounter._free(ptr);
                     res.end(result)
                     //console.log(result)
-                    //});
                     break;
                   case "ed25519":
                     var ptr = instance_ed25519_add.allocate(instance_ed25519_add.intArrayFromString(data), instance_ed25519_add.ALLOC_NORMAL)
@@ -148,20 +148,6 @@ increaseCounterC().then((instanceCounter) => {
       server.listen(port, hostname, () => {
         console.log(`Server running at http://${hostname}:${port}/`);
       });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     });
   });
 });

@@ -8,6 +8,8 @@ package execution
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -49,7 +51,7 @@ func (s *WASMService) Execute(snap store.Snapshot, step Step) (Result, error) {
 	responseBody := bytes.NewBuffer(step.Current.GetArg("json"))
 	resp, err := http.Post("http://127.0.0.1:3000/", "application/json", responseBody)
 	if err != nil {
-		log.Fatalf("An Error Occured %v", err)
+		return Result{}, err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
@@ -59,33 +61,17 @@ func (s *WASMService) Execute(snap store.Snapshot, step Step) (Result, error) {
 	log.Default()
 	args := make(map[string]interface{})
 	json.Unmarshal(body, &args)
-	if args["Accepted"].(string) == "true" {
+	acceptedType := fmt.Sprintf("%T", args["Accepted"])
+	if acceptedType != "string" {
+		return Result{}, errors.New("The value of \"Accepted\" is empty or of a wrong type")
+	}
+	resultType := fmt.Sprintf("%T", args["result"])
+	message := ""
+	if resultType == "string" {
+		message = args["Accepted"].(string)
+	}
+	if message == "true" {
 		return Result{true, args["result"].(string)}, nil
 	}
 	return Result{false, args["result"].(string)}, nil
-	//return Result{true, fmt.Sprintf("%v", args["counter"])}, nil
 }
-
-/*func ExecuteBeta() (Result, error) {
-	args := map[string]interface{}{
-		"counter": 0,
-		"xd":      "lol",
-	}
-	marsh, err := json.Marshal(args)
-	if err != nil {
-		log.Fatalf("An Error Occured %v", err)
-	}
-	responseBody := bytes.NewBuffer(marsh)
-	resp, err := http.Post("http://127.0.0.1:3000/", "application/json", responseBody)
-	if err != nil {
-		log.Fatalf("An Error Occured %v", err)
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	log.Default()
-	json.Unmarshal(body, &args)
-	return Result{true, fmt.Sprintf("%v", args["counter"])}, nil
-}*/

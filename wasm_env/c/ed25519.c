@@ -14,6 +14,8 @@ extern "C"
 {
 #endif
 
+    // The various following functions are needed to avoid an inexplicable bug with Emscripten. Mostly redefining functions that used to exist elsewhere in libsodium.
+
     unsigned char *rand_bytes(size_t num_bytes)
     {
         unsigned char *stream = malloc(num_bytes);
@@ -74,6 +76,7 @@ extern "C"
                  custom_is_zero(r, crypto_core_ed25519_SCALARBYTES));
         return r;
     }
+
 
     EMSCRIPTEN_KEEPALIVE
     const char *cryptoOp(const char *str)
