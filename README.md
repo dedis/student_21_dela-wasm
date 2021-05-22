@@ -1,5 +1,3 @@
-# student_21_dela-wasm
-
 # Webassembly execution environment for Dela #
 
 Generating WASM binaries can be hard and depend on several factors but is not necessary as the binaries are included along the original high-level contracts in C/C++ and Go.
