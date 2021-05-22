@@ -1,4 +1,4 @@
-// emcc ed25519.c /Users/snufon/c/json-c/*.c /Users/snufon/libsodium/sodium/utils.c /Users/snufon/libsodium/randombytes/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10/*.c /Users/snufon/libsodium/crypto_core/ed25519/ref10/*.c /Users/snufon/libsodium/crypto_core/ed25519/*.c  -o ed25519.js -I/Users/snufon/libsodium/include -I/Users/snufon/libsodium/include/sodium -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c/json-c-build -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_25_5 -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_51 -I/Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10 -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' -s EXPORTED_RUNTIME_METHODS='["allocate", "UTF8ToString", "intArrayFromString", "ALLOC_NORMAL"]' -s MODULARIZE
+// emcc ed25519_mul.c /Users/snufon/c/json-c/*.c /Users/snufon/libsodium/sodium/utils.c /Users/snufon/libsodium/randombytes/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10/*.c /Users/snufon/libsodium/crypto_core/ed25519/ref10/*.c /Users/snufon/libsodium/crypto_core/ed25519/*.c  -o ed25519_mul.js -I/Users/snufon/libsodium/include -I/Users/snufon/libsodium/include/sodium -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c/json-c-build -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_25_5 -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_51 -I/Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10 -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' -s EXPORTED_RUNTIME_METHODS='["allocate", "UTF8ToString", "intArrayFromString", "ALLOC_NORMAL"]' -s MODULARIZE
 
 // /Users/snufon/deps/b64/*.c -I/Users/snufon/deps/b64
 #include <json.h>
@@ -89,44 +89,19 @@ extern "C"
         json_object_object_add(jsonObj, "Accepted", json_object_new_string("true"));
 
         unsigned char point[crypto_box_PUBLICKEYBYTES];
-        unsigned char pointf[crypto_box_PUBLICKEYBYTES];
-        unsigned char *x = rand_bytes(32U); // {0x46, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30};
-        unsigned char *y = rand_bytes(32U);
-        //unsigned char *scalar = rand_scalar(32U);
+        unsigned char *x = rand_bytes(32U);
+        unsigned char *scalar = rand_scalar(32U);
         unsigned char px[crypto_core_ed25519_BYTES];
         crypto_core_ed25519_from_uniform(px, x);
-        unsigned char py[crypto_core_ed25519_BYTES];
-        crypto_core_ed25519_from_uniform(py, y);
 
         // mul 10k : 34
         // add 10k : 593
 
-        int a;
-
         for (int i = 0; i < 1; ++i)
         {
-            a = crypto_core_ed25519_add(point, px, py);
-            //crypto_core_ed25519_scalar_mul(pointf, px, scalar);
+            crypto_core_ed25519_scalar_mul(point, px, scalar);
         }
-        int length = snprintf(NULL, 0, "%d", a);
-        char *value = malloc(length + 1);
-        snprintf(value, length + 1, "%d", a);
-        json_object_object_add(jsonObj, "result", json_object_new_string(value));
-
-        /* unsigned char *client_secretkey = malloc(crypto_box_SECRETKEYBYTES);
-        unsigned char bytes[] = {0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30, 0x43, 0x4d, 0x30, 0x30};
-
-        a = crypto_scalarmult_curve25519(bytes, bytes, bytes);
-        int b = crypto_core_ed25519_add(bytes, bytes, bytes);
-
-        for (size_t i = 0; i < crypto_box_SECRETKEYBYTES; i++)
-        {   
-            client_secretkey[i] = 0x0D;
-        }
-        char buffer[50];
-        //sprintf(buffer, "%s", point1s);
-        const char *stringue = buffer;
-        return stringue; */
+        json_object_object_add(jsonObj, "result", json_object_new_string(point));
         return json_object_to_json_string(jsonObj);
     }
 

@@ -217,6 +217,43 @@ func TestCryptoOpC(t *testing.T) {
 	t.Log(float32(duration) / float32(1000000))
 }
 
+func TestCryptoOpC_mul(t *testing.T) {
+	var suite = suites.MustFind("Ed25519")
+	step := Step{}
+	scalar := suite.Scalar().Pick(suite.RandomStream())
+	point1 := suite.Point().Pick(suite.RandomStream())
+	//resultB, _ := suite.Point().Mul(scalar, suite.Point().Add(point1, point2)).MarshalBinary()
+	scalarB, _ := scalar.MarshalBinary()
+	point1B, _ := point1.MarshalBinary()
+	// encoding to base64 because JSON does not support raw bytes
+	args := map[string]interface{}{
+		"scalar":           base64.StdEncoding.EncodeToString(scalarB),
+		"point1":           base64.StdEncoding.EncodeToString(point1B),
+		"contractName":     "ed25519_mul",
+		"contractLanguage": "c",
+	}
+	marsh, err := json.Marshal(args)
+	if err != nil {
+		t.Error(err)
+	}
+	step.Current = fakeTx{json: marsh}
+
+	srvc := WASMService{}
+
+	past := time.Now()
+
+	res, err := srvc.Execute(nil, step)
+	duration := time.Since(past).Nanoseconds()
+	t.Log(res)
+	if err != nil {
+		t.Error(err)
+	}
+	// Cannot check since libsodium representation is completely different from kyber
+	//require.Equal(t, base64.StdEncoding.EncodeToString(resultB), res.Message)
+	t.Log("Time in milliseconds :")
+	t.Log(float32(duration) / float32(1000000))
+}
+
 // -----------------------------------------------------------------------------
 // Utility functions
 

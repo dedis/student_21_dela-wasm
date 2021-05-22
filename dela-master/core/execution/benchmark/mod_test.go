@@ -117,7 +117,7 @@ func BenchmarkWASM_Go_EC(b *testing.B) {
 	}
 }
 
-func BenchmarkNative_ed25519_add(b *testing.B) {
+func BenchmarkNative_Ed25519_Add(b *testing.B) {
 	for i := 0; i < iterations; i++ {
 		var suite = suites.MustFind("Ed25519")
 		point1 := suite.Point().Pick(suite.RandomStream())
@@ -127,7 +127,7 @@ func BenchmarkNative_ed25519_add(b *testing.B) {
 	}
 }
 
-func BenchmarkWASM_ed25519_add(b *testing.B) {
+func BenchmarkWASM_Go_Ed25519_Add(b *testing.B) {
 	for i := 0; i < iterations; i++ {
 		var suite = suites.MustFind("Ed25519")
 		step := execution.Step{}
@@ -153,7 +153,33 @@ func BenchmarkWASM_ed25519_add(b *testing.B) {
 	}
 }
 
-func BenchmarkNative_ed25519_mul(b *testing.B) {
+func BenchmarkWASM_C_Ed25519_Add(b *testing.B) {
+	for i := 0; i < iterations; i++ {
+		var suite = suites.MustFind("Ed25519")
+		step := execution.Step{}
+		point1 := suite.Point().Pick(suite.RandomStream())
+		point2 := suite.Point().Pick(suite.RandomStream())
+		point1B, _ := point1.MarshalBinary()
+		point2B, _ := point2.MarshalBinary()
+		// encoding to base64 because JSON does not support raw bytes
+		args := map[string]interface{}{
+			"point1":           base64.StdEncoding.EncodeToString(point1B),
+			"point2":           base64.StdEncoding.EncodeToString(point2B),
+			"contractName":     "ed25519",
+			"contractLanguage": "c",
+		}
+		marsh, err := json.Marshal(args)
+		if err != nil {
+			b.Error(err)
+		}
+		step.Current = fakeTx{json: marsh}
+
+		srvc := execution.WASMService{}
+		_, err = srvc.Execute(nil, step)
+	}
+}
+
+func BenchmarkNative_Ed25519_Mul(b *testing.B) {
 	for i := 0; i < iterations; i++ {
 		var suite = suites.MustFind("Ed25519")
 		point1 := suite.Point().Pick(suite.RandomStream())
@@ -162,7 +188,7 @@ func BenchmarkNative_ed25519_mul(b *testing.B) {
 	}
 }
 
-func BenchmarkWASM_ed25519_mul(b *testing.B) {
+func BenchmarkWASM_Go_Ed25519_Mul(b *testing.B) {
 	for i := 0; i < iterations; i++ {
 		var suite = suites.MustFind("Ed25519")
 		step := execution.Step{}
@@ -176,6 +202,32 @@ func BenchmarkWASM_ed25519_mul(b *testing.B) {
 			"scalar":           base64.StdEncoding.EncodeToString(scalarB),
 			"contractName":     "ed25519_mul",
 			"contractLanguage": "go",
+		}
+		marsh, err := json.Marshal(args)
+		if err != nil {
+			b.Error(err)
+		}
+		step.Current = fakeTx{json: marsh}
+
+		srvc := execution.WASMService{}
+		_, err = srvc.Execute(nil, step)
+	}
+}
+
+func BenchmarkWASM_C_Ed25519_Mul(b *testing.B) {
+	for i := 0; i < iterations; i++ {
+		var suite = suites.MustFind("Ed25519")
+		step := execution.Step{}
+		point1 := suite.Point().Pick(suite.RandomStream())
+		scalar := suite.Scalar().Pick(suite.RandomStream())
+		point1B, _ := point1.MarshalBinary()
+		scalarB, _ := scalar.MarshalBinary()
+		// encoding to base64 because JSON does not support raw bytes
+		args := map[string]interface{}{
+			"point1":           base64.StdEncoding.EncodeToString(point1B),
+			"scalar":           base64.StdEncoding.EncodeToString(scalarB),
+			"contractName":     "ed25519_mul",
+			"contractLanguage": "c",
 		}
 		marsh, err := json.Marshal(args)
 		if err != nil {

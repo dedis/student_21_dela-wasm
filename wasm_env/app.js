@@ -6,6 +6,7 @@ const port = 3000;
 const wasm_exec = require("./wasm_exec.js")
 const increaseCounterC = require('./c/increaseCounterC.js');
 const ed25519C = require('./c/ed25519.js');
+const ed25519C_mul = require('./c/ed25519_mul.js');
 
 const go = new Go();
 
@@ -58,107 +59,109 @@ async function fetchAndInstantiate5() {
 fetchAndInstantiate5();
 
 increaseCounterC().then((instanceCounter) => {
+  ed25519C().then((instance_ed25519_add) => {
+    ed25519C_mul().then((instance_ed25519_mul) => {
 
-  ed25519C().then((instance) => {
-    var ptr = instance.allocate(instance.intArrayFromString('{"point1":"Q6Fi2A7Ot69+ApLGfdjWyStCM2sHg5NnCzCuRmzm3ic=","point2":"JkKvN3MQYcmQxFGwOtpsD5zSHS5qFYEtM949b+Z3XMc=","scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}'), instance.ALLOC_NORMAL)
-    result = instance.UTF8ToString(instance._cryptoOp(ptr));
-    instance._free(ptr);
-    //console.log(result)
-  });
 
-  console.log("-------------------------------------------------------------- Warm up done. --------------------------------------------------------------")
 
-  const server = http.createServer((req, res) => {
-    res.setHeader('Content-Type', 'application/json;charset=utf-8');
-    // partly from https://medium.com/bb-tutorials-and-thoughts/how-to-write-simple-nodejs-rest-api-with-core-http-module-dcedd2c1256
+      const server = http.createServer((req, res) => {
+        res.setHeader('Content-Type', 'application/json;charset=utf-8');
+        // partly from https://medium.com/bb-tutorials-and-thoughts/how-to-write-simple-nodejs-rest-api-with-core-http-module-dcedd2c1256
 
-    const size = parseInt(req.headers['content-length'], 10)
-    const buffer = Buffer.allocUnsafe(size)
-    var pos = 0
+        const size = parseInt(req.headers['content-length'], 10)
+        const buffer = Buffer.allocUnsafe(size)
+        var pos = 0
 
-    //console.log(req.headers)
+        //console.log(req.headers)
 
-    req
-      .on('data', (chunk) => {
-        const offset = pos + chunk.length
-        if (offset > size) {
-          reject(413, 'Too Large', res)
-          return
-        }
-        chunk.copy(buffer, pos)
-        pos = offset
-      })
-      .on('end', () => {
-        if (pos !== size) {
-          reject(400, 'Bad Request', res)
-          return
-        }
-        const data = buffer.toString()
-        //console.log(data)
-        const jsonObj = JSON.parse(data)
+        req
+          .on('data', (chunk) => {
+            const offset = pos + chunk.length
+            if (offset > size) {
+              reject(413, 'Too Large', res)
+              return
+            }
+            chunk.copy(buffer, pos)
+            pos = offset
+          })
+          .on('end', () => {
+            if (pos !== size) {
+              reject(400, 'Bad Request', res)
+              return
+            }
+            const data = buffer.toString()
+            //console.log(data)
+            const jsonObj = JSON.parse(data)
 
-        switch (jsonObj.contractLanguage) {
-          case "go":
-            switch (jsonObj.contractName) {
-              case "increaseCounter":
-                var result = JSON.stringify(increaseCounter(data))
-                res.end(result)
+            switch (jsonObj.contractLanguage) {
+              case "go":
+                switch (jsonObj.contractName) {
+                  case "increaseCounter":
+                    var result = JSON.stringify(increaseCounter(data))
+                    res.end(result)
+                    break;
+                  case "ed25519":
+                    var result = JSON.stringify(cryptoOp(data))
+                    res.end(result)
+                    break;
+                  case "ed25519_mul":
+                    var result = JSON.stringify(ed25519_mul(data))
+                    res.end(result)
+                    break;
+                  case "simpleEC":
+                    var result = JSON.stringify(simpleEC(data))
+                    res.end(result)
+                    break;
+                }
                 break;
-              case "ed25519":
-                var result = JSON.stringify(cryptoOp(data))
-                res.end(result)
-                break;
-              case "ed25519_mul":
-                var result = JSON.stringify(ed25519_mul(data))
-                res.end(result)
-                break;
-              case "simpleEC":
-                var result = JSON.stringify(simpleEC(data))
-                res.end(result)
+              case "c":
+                switch (jsonObj.contractName) {
+                  case "increaseCounter":
+                    //increaseCounterC().then((instance) => {
+                    var ptr = instanceCounter.allocate(instanceCounter.intArrayFromString(data), instanceCounter.ALLOC_NORMAL)
+                    var result = instanceCounter.UTF8ToString(instanceCounter._increaseCounter(ptr));
+                    instanceCounter._free(ptr);
+                    res.end(result)
+                    //console.log(result)
+                    //});
+                    break;
+                  case "ed25519":
+                    var ptr = instance_ed25519_add.allocate(instance_ed25519_add.intArrayFromString(data), instance_ed25519_add.ALLOC_NORMAL)
+                    var result = instance_ed25519_add.UTF8ToString(instance_ed25519_add._cryptoOp(ptr));
+                    instance_ed25519_add._free(ptr);
+                    res.end(result)
+                    //console.log(result)
+                    break;
+                  case "ed25519_mul":
+                    var ptr = instance_ed25519_mul.allocate(instance_ed25519_mul.intArrayFromString(data), instance_ed25519_mul.ALLOC_NORMAL)
+                    var result = instance_ed25519_mul.UTF8ToString(instance_ed25519_mul._cryptoOp(ptr));
+                    instance_ed25519_mul._free(ptr);
+                    res.end(result)
+                    //console.log(result)
+                    break;
+                }
                 break;
             }
-            break;
-          case "c":
-            switch (jsonObj.contractName) {
-              case "increaseCounter":
-                //increaseCounterC().then((instance) => {
-                var ptr = instanceCounter.allocate(instanceCounter.intArrayFromString(data), instanceCounter.ALLOC_NORMAL)
-                var result = instanceCounter.UTF8ToString(instanceCounter._increaseCounter(ptr));
-                instanceCounter._free(ptr);
-                res.end(result)
-                //console.log(result)
-                //});
-                break;
-              case "ed25519":
-                ed25519C().then((instance) => {
-                  var ptr = instance.allocate(instance.intArrayFromString(data), instance.ALLOC_NORMAL)
-                  var result = instance.UTF8ToString(instance._cryptoOp(ptr));
-                  instance._free(ptr);
-                  res.end(result)
-                  //console.log(result)
-                });
-                break;
-            }
-            break;
-        }
-      })
+          })
+      });
+
+      server.listen(port, hostname, () => {
+        console.log(`Server running at http://${hostname}:${port}/`);
+      });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    });
   });
-
-  server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-  });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 });
