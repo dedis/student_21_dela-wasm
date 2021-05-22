@@ -1,4 +1,4 @@
-# Webassembly execution environment for Dela #
+# WebAssembly execution environment for Dela #
 
 
 The environment needs to be manually launched by launching the "node app.js" command from the "wasm_env" folder before it can handle POST requests from the Dela framework, which should be opened as a separate workspace. Every addition to the Dela framework is contained in core/execution.
