@@ -1,6 +1,7 @@
-# student_21_dela-wasm
-Webassembly execution environment for Dela
+# Webassembly execution environment for Dela #
 
-The 2 directories should be opened as separate workspaces. The Go toolsEnvVars of the wasm_env folder should be set to "GOOS": "js" and "GOARCH": "wasm" when compiling to wasm.
+Generating WASM binaries can be hard and depend on several factors but is not necessary as the binaries are included along the original high-level contracts in C/C++ and Go.
 
-Then, launch app.js with node and the box is ready to handle POST requests from the Dela framework.
+In the case where you want to compile to WASM yourself, you should open the relevant folder (inside the "wasm_env" folder) containing the smart contract as a seperate workspace. The commands are included as comments at the top of each original contract.
+
+The environment needs to be manually launched by launching the "node app.js" command from the "wasm_env" folder before it can handle POST requests from the Dela framework, which should be opened as a separate workspace.
