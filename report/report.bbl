@@ -1,0 +1,23 @@
+\begin{thebibliography}{1}
+
+\bibitem{webassembly}
+Webassembly.
+\newblock \url{https://webassembly.org}.
+
+\bibitem{dela}
+Dedis ledger architecture.
+\newblock \url{https://github.com/dedis/dela}.
+
+\bibitem{wasmer}
+Wasmer - the universal webassembly runtime.
+\newblock \url{https://wasmer.io/}.
+
+\bibitem{wasmtime}
+Wasmtime - a small and efficient runtime for webassembly & wasi.
+\newblock https://wasmtime.dev/.
+
+\bibitem{wavm}
+Wavm - webassembly virtual machine.
+\newblock https://wavm.github.io/.
+
+\end{thebibliography}
