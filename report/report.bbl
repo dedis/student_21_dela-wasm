@@ -13,7 +13,7 @@ Wasmer - the universal webassembly runtime.
 \newblock \url{https://wasmer.io/}.
 
 \bibitem{wasmtime}
-Wasmtime - a small and efficient runtime for webassembly & wasi.
+"wasmtime - a small and efficient runtime for webassembly and wasi".
 \newblock https://wasmtime.dev/.
 
 \bibitem{wavm}

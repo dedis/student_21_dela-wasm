@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.4)  1 JUN 2021 21:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.4)  1 JUN 2021 21:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -221,4 +221,65 @@ e 66.
 (pdftex.def)             Requested size: 113.81102pt x 54.96442pt.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 79.
 
- (/usr/local/texlive/2020/t
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 79.
+
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)) [1
+
+{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./logo_
+epfl_coul-eps-converted-to.pdf>] (./report.toc)
+\tf@toc=\write3
+\openout3 = `report.toc'.
+
+ [1]
+<wasm1.png, id=17, 1505.625pt x 788.9475pt>
+File: wasm1.png Graphic file (type png)
+<use wasm1.png>
+Package pdftex.def Info: wasm1.png  used on input line 26.
+(pdftex.def)             Requested size: 341.43306pt x 178.914pt.
+<wasm2.png, id=19, 1505.625pt x 644.4075pt>
+File: wasm2.png Graphic file (type png)
+<use wasm2.png>
+Package pdftex.def Info: wasm2.png  used on input line 35.
+(pdftex.def)             Requested size: 341.43306pt x 146.13586pt.
+ [2 <./wasm1.png>]
+Overfull \hbox (2.3847pt too wide) in paragraph at lines 50--51
+[]\OT1/cmr/m/n/10.95 Implementation of a fully func-tional ex-e-cu-tion mod-ule
+ that uses WASM 
+ []
+
+
+Underfull \vbox (badness 1286) has occurred while \output is active []
+
+ [3 <./wasm2.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4]
+[5] (./report.bbl) [6] (./report.aux) ) 
+Here is how much of TeX's memory you used:
+ 2642 strings out of 480608
+ 34316 string characters out of 5903631
+ 271319 words of memory out of 5000000
+ 18506 multiletter control sequences out of 15000+600000
+ 538971 words of font info for 49 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 30i,15n,31p,713b,335s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2020/texmf-dist/font
+s/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2020/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2020/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmtt10.pfb>
+Output written on report.pdf (7 pages, 218339 bytes).
+PDF statistics:
+ 60 PDF objects out of 1000 (max. 8388607)
+ 39 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+
