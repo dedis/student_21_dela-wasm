@@ -11,7 +11,7 @@ const ed25519C_add = require('./c/ed25519.js');
 const ed25519C_mul = require('./c/ed25519_mul.js');
 
 
-//// GO INSTANTIATIONS & WARM UPS
+//// GO INSTANTIATIONS (& OPTIONAL WARMUPS)
 
 // Increase Counter
 const go = new Go();
@@ -19,7 +19,7 @@ async function fetchAndInstantiate() {
   var buf = fs.readFileSync('./go/increaseCounter/main.wasm');
   var thing = await WebAssembly.instantiate(buf, go.importObject);
   go.run(thing.instance);
-  increaseCounter('{"counter":50}')
+  //increaseCounter('{"counter":50}')
 }
 fetchAndInstantiate();
 
@@ -29,7 +29,7 @@ async function fetchAndInstantiate2() {
   var buf = fs.readFileSync('./go/ed25519/main.wasm');
   var thing = await WebAssembly.instantiate(buf, go2.importObject);
   go2.run(thing.instance);
-  cryptoOp('{"point1":"Q6Fi2A7Ot69+ApLGfdjWyStCM2sHg5NnCzCuRmzm3ic=","point2":"JkKvN3MQYcmQxFGwOtpsD5zSHS5qFYEtM949b+Z3XMc=","scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}')
+  //cryptoOp('{"point1":"Q6Fi2A7Ot69+ApLGfdjWyStCM2sHg5NnCzCuRmzm3ic=","point2":"JkKvN3MQYcmQxFGwOtpsD5zSHS5qFYEtM949b+Z3XMc=","scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}')
 }
 fetchAndInstantiate2();
 
@@ -49,7 +49,7 @@ async function fetchAndInstantiate4() {
   var buf = fs.readFileSync('./go/simpleEC/simpleEC.wasm');
   var thing = await WebAssembly.instantiate(buf, go4.importObject);
   go4.run(thing.instance);
-  simpleEC('{"scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}');
+  //simpleEC('{"scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}');
 }
 fetchAndInstantiate4();
 
@@ -59,7 +59,7 @@ async function fetchAndInstantiate5() {
   var buf = fs.readFileSync('./go/ed25519_mul/ed25519_mul.wasm');
   var thing = await WebAssembly.instantiate(buf, go5.importObject);
   go5.run(thing.instance);
-  ed25519_mul('{"point1":"Q6Fi2A7Ot69+ApLGfdjWyStCM2sHg5NnCzCuRmzm3ic=", "scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}')
+  //ed25519_mul('{"point1":"Q6Fi2A7Ot69+ApLGfdjWyStCM2sHg5NnCzCuRmzm3ic=", "scalar":"/koEUcby5r3S3U1t+1IBCyY9USOSKP2SfHEOoc3C/Q4="}')
 }
 fetchAndInstantiate5();
 
