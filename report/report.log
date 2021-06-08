@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.4)  1 JUN 2021 21:08
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.4)  8 JUN 2021 17:35
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -253,33 +253,96 @@ Overfull \hbox (2.3847pt too wide) in paragraph at lines 50--51
  that uses WASM 
  []
 
+[3 <./wasm2.png>] [4] [5] [6] [7] [8]
+<wasm3.png, id=44, 1505.625pt x 669.2503pt>
+File: wasm3.png Graphic file (type png)
+<use wasm3.png>
+Package pdftex.def Info: wasm3.png  used on input line 127.
+(pdftex.def)             Requested size: 341.43306pt x 151.7696pt.
+ [9 <./wasm3.png>]
+<increase_counter.png, id=49, 1221.56375pt x 634.37pt>
+File: increase_counter.png Graphic file (type png)
+<use increase_counter.png>
+Package pdftex.def Info: increase_counter.png  used on input line 143.
+(pdftex.def)             Requested size: 398.33858pt x 206.86473pt.
 
-Underfull \vbox (badness 1286) has occurred while \output is active []
+Overfull \hbox (38.33858pt too wide) in paragraph at lines 143--144
+ [][] 
+ []
 
- [3 <./wasm2.png>]
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [4]
-[5] (./report.bbl) [6] (./report.aux) ) 
+ [10]
+<gen_mul.png, id=53, 1171.37625pt x 651.43375pt>
+File: gen_mul.png Graphic file (type png)
+<use gen_mul.png>
+Package pdftex.def Info: gen_mul.png  used on input line 152.
+(pdftex.def)             Requested size: 398.33858pt x 221.52429pt.
+
+Overfull \hbox (38.33858pt too wide) in paragraph at lines 152--153
+ [][] 
+ []
+
+<point_add.png, id=54, 1171.37625pt x 679.53876pt>
+File: point_add.png Graphic file (type png)
+<use point_add.png>
+Package pdftex.def Info: point_add.png  used on input line 160.
+(pdftex.def)             Requested size: 398.33858pt x 231.0816pt.
+
+Overfull \hbox (38.33858pt too wide) in paragraph at lines 160--161
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [11 <./increase_counter.png> <./gen_mul.png>]
+<point_mul.png, id=60, 1173.38374pt x 696.6025pt>
+File: point_mul.png Graphic file (type png)
+<use point_mul.png>
+Package pdftex.def Info: point_mul.png  used on input line 169.
+(pdftex.def)             Requested size: 398.33858pt x 236.48032pt.
+
+Overfull \hbox (38.33858pt too wide) in paragraph at lines 169--170
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [12 <./point_add.png> <./point_mul.png>] [13] (./report.bbl
+Underfull \hbox (badness 7925) in paragraph at lines 28--31
+[]\OT1/cmr/m/n/10.95 Standardizing wasi: A sys-tem in-ter-face to run we-bassem
+-
+ []
+
+
+Underfull \hbox (badness 5064) in paragraph at lines 28--31
+\OT1/cmr/m/n/10.95 bly out-side the web.  $\OT1/cmtt/m/n/10.95 https : / / hack
+s . mozilla . org / 2019 / 03 /
+ []
+
+) [14] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 2642 strings out of 480608
- 34316 string characters out of 5903631
- 271319 words of memory out of 5000000
- 18506 multiletter control sequences out of 15000+600000
+ 2678 strings out of 480608
+ 34865 string characters out of 5903631
+ 273335 words of memory out of 5000000
+ 18537 multiletter control sequences out of 15000+600000
  538971 words of font info for 49 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 30i,15n,31p,713b,335s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2020/texmf-dist/font
-s/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2020/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2020/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmtt10.pfb>
-Output written on report.pdf (7 pages, 218339 bytes).
+ 30i,15n,31p,1082b,335s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2020/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmbx12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmr10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmr12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmtt10.pfb>
+Output written on report.pdf (15 pages, 1504554 bytes).
 PDF statistics:
- 60 PDF objects out of 1000 (max. 8388607)
- 39 compressed objects within 1 object stream
+ 95 PDF objects out of 1000 (max. 8388607)
+ 56 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

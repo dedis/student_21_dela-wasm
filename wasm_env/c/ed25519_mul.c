@@ -89,25 +89,20 @@ extern "C"
         json_object_object_add(jsonObj, "Accepted", json_object_new_string("true"));
 
         unsigned char point[crypto_box_PUBLICKEYBYTES];
-        unsigned char *x = rand_bytes(32U);
-        unsigned char *scalar = rand_scalar(32U);
-        unsigned char px[crypto_core_ed25519_BYTES];
-        crypto_core_ed25519_from_uniform(px, x);
-        free(x);
 
         // mul 10k : 34
         // add 10k : 593
 
-        for (int i = 0; i < 1; ++i)
+        for (int i = 0; i < 1000; ++i)
         {
+            unsigned char *x = rand_bytes(32U);
+            unsigned char *scalar = rand_scalar(32U);
+            unsigned char px[crypto_core_ed25519_BYTES];
+            crypto_core_ed25519_from_uniform(px, x);
             crypto_core_ed25519_scalar_mul(point, px, scalar);
         }
-        free(px);
-        free(scalar);
         json_object_object_add(jsonObj, "result", json_object_new_string(point));
-        free(point);
-        const char * res = json_object_to_json_string(jsonObj);
-        free(jsonObj);
+        const char *res = json_object_to_json_string(jsonObj);
         return res;
     }
 

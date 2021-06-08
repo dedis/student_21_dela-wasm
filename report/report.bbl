@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{webassembly}
 Webassembly.
@@ -13,11 +13,32 @@ Wasmer - the universal webassembly runtime.
 \newblock \url{https://wasmer.io/}.
 
 \bibitem{wasmtime}
-"wasmtime - a small and efficient runtime for webassembly and wasi".
-\newblock https://wasmtime.dev/.
+Wasmtime - a small and efficient runtime for webassembly and wasi.
+\newblock \url{https://wasmtime.dev/}.
 
 \bibitem{wavm}
 Wavm - webassembly virtual machine.
-\newblock https://wavm.github.io/.
+\newblock \url{https://wavm.github.io/}.
+
+\bibitem{wasi}
+Wasi - the webassembly system interface.
+\newblock \url{https://wasi.dev/}.
+
+\bibitem{announcingwasi}
+Standardizing wasi: A system interface to run webassembly outside the web.
+\newblock
+  \url{https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/}.
+
+\bibitem{emscripten}
+Emscripten.
+\newblock \url{https://emscripten.org/}.
+
+\bibitem{llvm}
+The llvm compiler infrastructure.
+\newblock \url{https://llvm.org/}.
+
+\bibitem{tinygo}
+Tinygo - a go compiler for small places.
+\newblock \url{https://tinygo.org/}.
 
 \end{thebibliography}
