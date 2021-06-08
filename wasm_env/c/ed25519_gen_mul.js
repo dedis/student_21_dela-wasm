@@ -96,9 +96,9 @@ Module['ready'] = new Promise(function(resolve, reject) {
       }
     
 
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_increaseCounter')) {
-        Object.defineProperty(Module['ready'], '_increaseCounter', { configurable: true, get: function() { abort('You are getting _increaseCounter on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_increaseCounter', { configurable: true, set: function() { abort('You are setting _increaseCounter on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
+      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_cryptoOp')) {
+        Object.defineProperty(Module['ready'], '_cryptoOp', { configurable: true, get: function() { abort('You are getting _cryptoOp on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
+        Object.defineProperty(Module['ready'], '_cryptoOp', { configurable: true, set: function() { abort('You are setting _cryptoOp on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
       }
     
 
@@ -1586,7 +1586,7 @@ function createExportWrapper(name, fixedasm) {
   };
 }
 
-var wasmBinaryFile = 'increaseCounterC.wasm';
+var wasmBinaryFile = 'ed25519_gen_mul.wasm';
 if (!isDataURI(wasmBinaryFile)) {
   wasmBinaryFile = locateFile(wasmBinaryFile);
 }
@@ -4525,10 +4525,10 @@ var asm = createWasm();
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");
 
 /** @type {function(...*):?} */
-var _increaseCounter = Module["_increaseCounter"] = createExportWrapper("increaseCounter");
+var _malloc = Module["_malloc"] = createExportWrapper("malloc");
 
 /** @type {function(...*):?} */
-var _malloc = Module["_malloc"] = createExportWrapper("malloc");
+var _cryptoOp = Module["_cryptoOp"] = createExportWrapper("cryptoOp");
 
 /** @type {function(...*):?} */
 var _free = Module["_free"] = createExportWrapper("free");

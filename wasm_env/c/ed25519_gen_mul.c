@@ -1,4 +1,4 @@
-// emcc ed25519_mul.c /Users/snufon/c/json-c/*.c /Users/snufon/libsodium/sodium/utils.c /Users/snufon/libsodium/randombytes/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10/*.c /Users/snufon/libsodium/crypto_core/ed25519/ref10/*.c /Users/snufon/libsodium/crypto_core/ed25519/*.c  -o ed25519_mul.js -I/Users/snufon/libsodium/include -I/Users/snufon/libsodium/include/sodium -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c/json-c-build -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_25_5 -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_51 -I/Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10 -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' -s EXPORTED_RUNTIME_METHODS='["allocate", "UTF8ToString", "intArrayFromString", "ALLOC_NORMAL"]' -s MODULARIZE -s ALLOW_MEMORY_GROWTH=1
+// emcc ed25519_gen_mul.c /Users/snufon/libsodium/crypto_scalarmult/ed25519/ref10/*.c /Users/snufon/c/json-c/*.c /Users/snufon/libsodium/sodium/utils.c /Users/snufon/libsodium/randombytes/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/*.c /Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10/*.c /Users/snufon/libsodium/crypto_core/ed25519/ref10/*.c /Users/snufon/libsodium/crypto_core/ed25519/*.c  -o ed25519_mul.js -I/Users/snufon/libsodium/include -I/Users/snufon/libsodium/include/sodium -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c -I/Users/snufon/libsodium/include/sodium/private -I/Users/snufon/c/json-c/json-c-build -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_25_5 -I/Users/snufon/libsodium/crypto_core/ed25519/ref10/fe_51 -I/Users/snufon/libsodium/crypto_scalarmult/curve25519/ref10 -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' -s EXPORTED_RUNTIME_METHODS='["allocate", "UTF8ToString", "intArrayFromString", "ALLOC_NORMAL"]' -s MODULARIZE -s ALLOW_MEMORY_GROWTH=1
 
 // /Users/snufon/deps/b64/*.c -I/Users/snufon/deps/b64
 #include <json.h>
@@ -89,20 +89,15 @@ extern "C"
         json_object_object_add(jsonObj, "Accepted", json_object_new_string("true"));
 
         unsigned char point[crypto_box_PUBLICKEYBYTES];
-        unsigned char *x = rand_bytes(32U);
         unsigned char *scalar = rand_scalar(32U);
-        unsigned char px[crypto_core_ed25519_BYTES];
-        crypto_core_ed25519_from_uniform(px, x);
-        free(x);
 
         // mul 10k : 34
         // add 10k : 593
 
         for (int i = 0; i < 1; ++i)
         {
-            crypto_core_ed25519_scalar_mul(point, px, scalar);
+            crypto_scalarmult_ed25519_base(point, scalar);
         }
-        free(px);
         free(scalar);
         json_object_object_add(jsonObj, "result", json_object_new_string(point));
         free(point);

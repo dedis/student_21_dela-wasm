@@ -25,7 +25,9 @@ func simpleEC(this js.Value, inputs []js.Value) interface{} {
 	scalarB, _ := base64.StdEncoding.DecodeString(args["scalar"].(string))
 	scalar.UnmarshalBinary(scalarB)
 	var resultB []byte
-	resultB, _ = suite.Point().Mul(scalar, nil).MarshalBinary()
+	for i := 0; i < 1; i++ {
+		resultB, _ = suite.Point().Mul(scalar, nil).MarshalBinary()
+	}
 	args["result"] = base64.StdEncoding.EncodeToString(resultB)
 	//args["resultTest"] = result.String()
 	args["Accepted"] = "true"

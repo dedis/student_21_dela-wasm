@@ -13,7 +13,9 @@ import (
 	"go.dedis.ch/kyber/v3/suites"
 )
 
-const iterations = 50
+// go test -bench=.
+
+const iterations = 1
 
 var suite = suites.MustFind("Ed25519")
 

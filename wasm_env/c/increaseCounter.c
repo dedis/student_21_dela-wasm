@@ -5,7 +5,7 @@
 #include <stdio.h>
 //#include <time.h>
 
-// emcc increaseCounter.c /Users/snufon/c/json-c/*.c -o increaseCounterC.js -I/Users/snufon/c/json-c -I/Users/snufon/c/json-c/json-c-build -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' -s EXPORTED_RUNTIME_METHODS='["allocate", "UTF8ToString", "intArrayFromString", "ALLOC_NORMAL"]' -s MODULARIZE
+// emcc increaseCounter.c /Users/snufon/c/json-c/*.c -o increaseCounterC.js -I/Users/snufon/c/json-c -I/Users/snufon/c/json-c/json-c-build -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' -s EXPORTED_RUNTIME_METHODS='["allocate", "UTF8ToString", "intArrayFromString", "ALLOC_NORMAL"]' -s MODULARIZE -s ALLOW_MEMORY_GROWTH=1
 #ifdef __cplusplus
 extern "C"
 {

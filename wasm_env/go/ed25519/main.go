@@ -37,7 +37,7 @@ func cryptoOp(this js.Value, inputs []js.Value) interface{} {
 	point2.UnmarshalBinary(point2B)
 	var resultB []byte
 	//var result kyber.Point
-	for i := 0; i < 1; i++ {
+	for i := 0; i < 250; i++ {
 		resultB, _ = suite.Point().Add(point1, point2).MarshalBinary()
 	}
 	args["result"] = base64.StdEncoding.EncodeToString(resultB)
