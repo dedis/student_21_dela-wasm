@@ -29,7 +29,7 @@ func ed25519_mul(this js.Value, inputs []js.Value) interface{} {
 	scalar.UnmarshalBinary(scalarB)
 	var resultB []byte
 	//var result kyber.Point
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 1; i++ {
 		resultB, _ = suite.Point().Mul(scalar, point1).MarshalBinary()
 	}
 	args["result"] = base64.StdEncoding.EncodeToString(resultB)

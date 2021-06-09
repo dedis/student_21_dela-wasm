@@ -147,12 +147,12 @@ func BenchmarkWASM_C_EC(b *testing.B) {
 
 func BenchmarkNative_Ed25519_Add(b *testing.B) {
 	var suite = suites.MustFind("Ed25519")
-	point1 := suite.Point().Pick(suite.RandomStream())
-	point2 := suite.Point().Pick(suite.RandomStream())
+	var stream = suite.RandomStream()
+	point1 := suite.Point().Pick(stream)
+	point2 := suite.Point().Pick(stream)
 	for i := 0; i < iterations; i++ {
-		suite.Point().Add(point1, point2)
+		point1 = suite.Point().Add(point1, point2)
 	}
-
 }
 
 func BenchmarkWASM_Go_Ed25519_Add(b *testing.B) {

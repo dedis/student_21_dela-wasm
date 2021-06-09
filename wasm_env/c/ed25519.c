@@ -109,7 +109,6 @@ extern "C"
         for (int i = 0; i < 1; ++i)
         {
             a = crypto_core_ed25519_add(point, px, py);
-            //crypto_core_ed25519_scalar_mul(pointf, px, scalar);
         }
         int length = snprintf(NULL, 0, "%d", a);
         char *value = malloc(length + 1);
