@@ -8,6 +8,10 @@ Webassembly.
 Dedis ledger architecture.
 \newblock \url{https://github.com/dedis/dela}.
 
+\bibitem{ewasm}
+Ethereum flavored webassembly (ewasm).
+\newblock \url{https://github.com/ewasm}.
+
 \bibitem{wasmer}
 Wasmer - the universal webassembly runtime.
 \newblock \url{https://wasmer.io/}.
@@ -40,5 +44,22 @@ The llvm compiler infrastructure.
 \bibitem{tinygo}
 Tinygo - a go compiler for small places.
 \newblock \url{https://tinygo.org/}.
+
+\bibitem{kyber}
+Dedis advanced crypto library for go.
+\newblock \url{https://github.com/dedis/kyber}.
+
+\bibitem{libsodium}
+Libsodium.
+\newblock \url{https://github.com/jedisct1/libsodium}.
+
+\bibitem{nondeterminism}
+Nondeterminism in webassembly.
+\newblock
+  \url{https://github.com/WebAssembly/design/blob/main/Nondeterminism.md}.
+
+\bibitem{sentinel}
+Sentinel - validator and metering injector for ewasm.
+\newblock \url{https://github.com/ewasm/sentinel-rs}.
 
 \end{thebibliography}

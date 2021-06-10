@@ -38,7 +38,7 @@ As shown in figure 1, the standard way of executing a smart contract in DELA is 
 
 To circumvent the first limitation, the obvious solution is to decouple the smart contract execution environment from the node's environment, as illustrated in figure 2. Any modification on the smart contracts would only require recompiling the smaller, decoupled environment which opens up the possibility of loading and unloading smart contracts dynamically without interrupting the main DELA environment. With this decoupled environment, smart contracts must not necessarily be written in Go, which somewhat takes care of the second limitation. However, supporting multiple languages efficiently is not straightforward and requires something else, which is when WebAssembly comes into the picture.
 
-WebAssembly (WASM) is an open standard that defines a binary format which can obtained from higher level compatible languages, which we call ``source languages'' in this report. As its name implies, it is made up of low level ``Assembly-like'' instructions which can thus be run on a wide range of machines very efficiently. The WASM code is executed in a sandboxed environment. This added flexibility, its host independence and low performance penalty make it an ideal candidate for a smart-contract runtime used by many nodes trying to reach a consensus. Ethereum's proposed redesign of their execution layer using WASM further indicates that there is great potential for the technology in the blockchain field. 
+WebAssembly (WASM) is an open standard that defines a binary format which can obtained from higher level compatible languages, which we call ``source languages'' in this report. As its name implies, it is made up of low level ``Assembly-like'' instructions which can thus be run on a wide range of machines very efficiently. The WASM code is executed in a sandboxed environment. This added flexibility, its host independence and low performance penalty make it an ideal candidate for a smart-contract runtime used by many nodes trying to reach a consensus. Ethereum's proposed redesign of their execution layer using WASM (dubbed eWASM) \cite{ewasm} further indicates that there is great potential for the technology in the blockchain field. 
 
 \subsection{Goals}
 \label{Goals}
@@ -64,7 +64,7 @@ The most important design decision during the project was selecting the ``kind''
 
 The first factor that was taken into account was the general lack of resources on WASM, which is severely exacerbated when the environment is not browser-based. Additionally, when dealing both with a non-browser solution as well as unusual source languages like Go, information about the specific interactions becomes virtually nonexistent. The daemon would have communicated with the DELA framework using unix sockets and would have used a runtime like Wasmer \cite{wasmer}, Wasmtime \cite{wasmtime} or WAVM \cite{wavm}, but was quickly deemed to be the riskiest option. Not only was it the least documented kind of environment and the most different from the standard browser solution, it was also identified that those non-web environments were transitioning to the Web Assembly Interface (WASI) \cite{wasi}\cite{announcingwasi}.
 
-As a response to the aforementioned attempts to use WASM outside of web-browsers, WASI was introduced in 2019 to achieve standardisation and extend WASM to the OS level. The fact that it was newer and less mature than ``standard WASM'' further increased risks. Additionally, many languages such as Go do not yet support compilation into WASM binaries which are compatible with this interface. The transition also meant that almost all up-to-date information about non-web solutions were about using WASI.
+As a response to the aforementioned attempts to use WASM outside of web-browsers, WASI was introduced in 2019 to achieve standardisation and extend WASM to the OS level. The fact that it is newer and less mature than ``standard WASM'' further increased risks. Additionally, many languages such as Go do not yet support compilation into WASM binaries which are compatible with this interface. The transition also meant that almost every up-to-date information about non-web solutions was about using WASI.
 
 The aforementioned points about the lack of resources and WASI not only apply to a unix daemon solution but also to a Node.js server-based solution communicating over HTTP, though less severely. While Node.js does expect its users to use its WASI API, it supports a limited portion of the standard WASM JavaScript API. However, there was no evidence that Node.js could handle Go's unusual WASM implementation in this specific context (which is further discussed in Part 3.2) and early tries to make it work failed.
 
@@ -79,7 +79,7 @@ Similarly to the freedom on the general configuration of the environment, the ch
 
 Language compatibilities that were guaranteed to be worth prioritising are C and C++, since they were the two intended source languages when WebAssembly was introduced, before other languages added WASM compatibility as well. The target binaries are obtained from both languages with Emscripten \cite{emscripten}, a compiler toolchain which uses LLVM \cite{llvm}. The quality of the source language to WASM translation with Emscripten and the performance of the resulting binaries are considered to be state of the art in the world of WASM compatible languages, which made the environment support of the two languages even more indispensable since we are interested in comparing performance with native executions of smart contracts. Another obvious advantage is their extreme prevalence and that their simultaneous support incurs negligible additional work.
 
-The other language which is supported is Go, which was chosen for many reasons. The first is that comparisons between the native and WASM executions can become more interesting when the exact same smart contract is compared in both cases, which is only possible if the native language is supported by the WASM environment. This can provide a precise comparison on the performance penalty caused by WASM and the communication with DELA, since external differences caused by differences in languages are removed. Another advantage is that Go is frequently used by the DEDIS lab, which means that its support could be very convenient in the future.
+The Go language is also supported for multiple reasons. The first is that comparisons between the native and WASM executions become more interesting when the exact same smart contract is compared between executions, which is only possible if the native language is supported by the WASM environment. This can provide a precise comparison on the performance penalty caused by WASM and the communication with DELA since external, language-specific differences are removed. Another advantage is that Go is frequently used by the DEDIS lab, which means that its support could be very convenient in the future.
 
 Something that was not known when choosing Go was a fundamental difference compared to other languages : C and C++ for example treat WASM as a library, while Go treats it as an application. This results in profound differences that requires the binaries to be treated very differently depending on the source language, even after the WASM compilation has been done. This caused many additional difficulties which are discussed in part 3 and a lot of the work done to support Go could not be reused to support C/C++. Even though this had a negative impact on productivity, this makes the addition of Go way more interesting than another language whose WASM support is similar to C/C++. Additionally, this allows interesting performance comparisons between what is considered the state of the art WASM support and a more subpar one in the case of Go. Since the project also mostly acts as an exploratory experiment, it is also good to prove that this kind of solution can handle less common languages with poorer WASM support.
 
@@ -132,53 +132,86 @@ Since the communication is one to one (each node from the DELA ledger has its ow
 
 Outside of the transaction itself, some parts of the ledger's storage must also be sent over to the environment because smart contracts may need to read or write content on it such as its state. However, the parts of the storage which are necessary change depending on the smart contract. Sending the entirety of the storage would be the easiest solution but would be very inefficient. As DELA matures and transactions become more realistic and complex, a system needs to be implemented which sends only the essential parts of the storage. The solution should be to create a map accessible by DELA's execution module which specifies which parts of the storage must be included in the JSON to be sent over to the environment depending on the smart contract name, which would be the keys of the map. Note that the source language of the smart contract does not affect which parts of the storage are required. This would be the easiest and quickest way for the module to obtain the subset of the storage to include in the JSON with the unique smart contract name.
 
-Errors are handled and relayed across the different parts so that the DELA can directly read eventual errors. However, only ``honest'' mistakes are assumed since the environment is located on the same machine as the DELA node : we do not consider either to be a potentially harmful to the other. For example, we do not expect the node to divert from protocol and send unusual data to the environment in an attempt to shut it down since it has no reason to do so. Even a hostile node would gain no benefit by making its own WASM environment behave in an unusual manner : the environment is nothing more than a tool serving the node.
-
+Errors are handled and relayed across the different parts so that the DELA can directly read eventual errors. However, only ``honest'' mistakes are assumed since the environment is located on the same machine as the DELA node : we do not consider either to be a potentially harmful adversary to the other. For example, we do not expect the node to divert from protocol and send unusual data to the environment in an attempt to shut it down since it has no reason to do so. Even a hostile node would gain no benefit by making its own WASM environment behave in an unusual manner : the environment is nothing more than a tool serving the node.
 \section{Results}
+This part compares benchmarked performances of various operations executed either natively on the DELA framework or on the environment as a WASM binary, which may be obtained from a smart contract originally written either in Go or C. In the second case, what is benchmarked is the time it takes for DELA's execution module to receive the WASM execution's result from the environment after its request, meaning even the communication between the two is included in the runtime. The native and ``Go to WASM'' versions can use the exact same Go code, but this is obviously not possible for the ``C to WASM'' versions. The latter were nevertheless written while aiming to stay as close as possible to the two Go versions.
 
 \subsection{Counter Increase}
 
 \begin{figure}[H]
  \centering
-  \includegraphics[width=14cm]{increase_counter.png}
+  \includegraphics[width=13cm]{increase_counter.png}
 \end{figure}
 
+As its name implies, the operation is a very simple incrementation of a counter. Since the operation itself is extremely inexpensive, this is a great indication of the overhead incurred by the two kinds of WASM executions on the environment. Considering the many additional steps that are part of the WASM executions (HTTP communications between DELA and the environment, communications between JavaScript and WASM, read and writes to the JSON) the overhead of less than one picosecond per execution seems very impressive. Note that this overhead is lower for C smart contracts compared to Go ones. As expected, the native times are extremely low since the only operations measured are the inexpensive increments of a number.
 
+The plot's X variable is the number consecutive executions, meaning that the aforementioned WASM smart contracts' overhead is repeated sequentially. A log-log plot is used to show a wide range of results and highlights the linear growth. It is more interesting to increase the number of operations inside of the WASM smart contract's instead of repeating the entire execution process with its overhead and is also more realistic since it represents the execution of a complex smart contract as opposed to the sequential executions of many inexpensive ones. However, doing so when the operation itself is a simple integer increment does not yield interesting results, which is why we only use this approach in the following subsections focused on more complex cryptographic operations.
 
-\subsection{Generator Multiplication}
+\subsection{Base Point Multiplication}
 
 \begin{figure}[H]
  \centering
-  \includegraphics[width=14cm]{gen_mul.png}
+  \includegraphics[width=13cm]{gen_mul.png}
 \end{figure}
+
+We now use a linear-linear plot since we only increase the number of operations inside of the smart contracts and no nonger launch the global execution process multiple times. The aforementioned overhead of less than one picosecond very quickly becomes irrelevant as the number of operations increases. The sequential operations are scalar multiplications of the Ed25519 base point $(x, 4/5)$. The native and WASM version written in Go use the lab's Kyber library \cite{kyber} while the C version uses Libsodium \cite{libsodium}. The results are what we would expect, considering that C is known to have a better WASM support compared to Go. It is also satisfying to see that while the Go to WASM version is two to three times slower than the native one, it still is of the same order of magnitude. 
+
+\subsection{Ed25519 Point Multiplication}
+
+\begin{figure}[h]
+ \centering
+  \includegraphics[width=13cm]{point_mul.png}
+\end{figure}
+
+The operations analysed are scalar multiplications of random elliptic curve points. This time, the C to WASM version fares even better, beating the native version : differences in the two libraries must necessarily be the culprit. The Go to WASM translation again results in two to three times slower performance and cannot be blamed since it does not impact the native results. The C runtimes are comparable to the ones seen in the previous part while the Go runtimes more than doubled : base point multiplications probably have some sort of optimisation in the Kyber library which causes the difference.
 
 
 \subsection{Ed25519 Point Addition}
 
 \begin{figure}[H]
  \centering
-  \includegraphics[width=14cm]{point_add.png}
+  \includegraphics[width=13cm]{point_add.png}
 \end{figure}
 
-
-
-\subsection{Ed25519 Point Multiplication}
-
-\begin{figure}[H]
- \centering
-  \includegraphics[width=14cm]{point_mul.png}
-\end{figure}
-
-
+This graph compares runtimes of sequential additions of two elliptic curve points. The results are unexpected : Libsodium's point addition appears to be abysmally slower than Kyber's. This is the only possible explanation since we cannot blame the C to WASM translation compared to Go's ; native C experiments seemed to confirm that additions are surprisingly slow in Libsodium. As a result, this comparison is almost completely dictated by differences in the libraries used and makes the impact of the environment and WASM negligible. The fact that Libsodium's additions runtimes are similar to its multiplications' runtimes in scale is quite curious but is ultimately not the main focus of this analysis. The Go to WASM version is once again about three times slower than the native one, which is the most trustworthy takeaway from these four comparisons.
 
 \section{Discussion}
 
 \subsection{Determinism}
 
+Determinism is a crucial question in this blockchain context : since transactions are inputs to smart contracts and that a consensus is reached if enough nodes agree on the resulting output, it is crucial that this output is obtained deterministically. Nondeterminism could lead honest nodes to disagree with each other regarding the validity of transactions.
+
+WASM is nondeterministic by design \cite{nondeterminism}, but situations in which this nondeterminism can occur in smart contracts are fortunately limited to the following 3 cases :
+
+\begin{enumerate}
+
+\itemsep0em
+
+ \item The smart contract imports problematic libraries, such as ``time''
+ \item A floating point arithmetic operator produces a NaN value
+ \item A resource such as memory is exhausted
+ 
+\end{enumerate} 
+ 
+NaN values' bits are set nondeterministically and exhaustion of resources can depend on the hardware. None of these cases should realistically happen when the author of a smart contract is honest, which allow us to confidently affirm that the smart contracts that the environment currently supports are executed deterministically. The problem is that ``almost deterministic'' is not good enough in this blockchain context : if the environment is to be realistically deployed and supposed to run smart contracts submitted by anyone in the future, it will need a system which can identify and reject problematic smart contracts which may cause nondeterminism.
+
+The most instructive way to learn how to achieve such a ``deterministic subset'' of WASM was to inspect eWASM's solution. It uses a validator called Sentinel \cite{sentinel}, which inspects and potentially rejects WASM binaries among other tasks. While Sentinel is totally undocumented and written in Rust which I am not familiar with, it was possible to deduce the general strategy it uses to validate smart contracts.
+
+Smart contracts importing problematic libraries are automatically rejected by Sentinel with a whitelist approach : only a particular set of libraries are allowed to be imported. The WASM file is parsed by Sentinel and rejected if it contains a forbidden floating point opcode. This is very radical but likely necessary as it is very hard to know in advance which operation could result in a NaN output since it depends on many variables and on the initial arguments. The way in which Sentinel manages to avoid nondeterminism caused by exhaustion of resources is not as clear and seems to be focused on the stack size by setting an upper bound.
+
+Since Sentinel validates WASM binaries indiscriminately from their source language, these strategies could also be used once the binaries are obtained from submitted smart contracts before validating them for this project's environment. Developing such a solution would require a lot of reverse engineering on Sentinel. The required amount of work appears to be substantial ; achieving this strict deterministic subset would likely be an entire project in itself. 
+
+It is also important to note that Sentinel is considered to be in alpha state by its author and did not receive updates in more than two years : there is no absolute guarantee that it is capable of completely eliminate all forms of nondeterminism. Personal attempts to inquire about its state were unsuccessful and mirror previous experiences when trying to learn about eWASM in general : while no official announcement has been made, it becomes apparent that work on the project has dwindled significantly in recent years.
+
 \subsection{Automated Smart Contract Loading}
 
+In its present form, the environment needs manual adjustments each time a new smart contract is added : the WASM binary must be generated by the user, added to the environment and a small amount of additional JavaScript code must be written to instantiate the binary during the setup and run the exported function when the right request is received afterwards. While this is currently acceptable with an environment which supports only 8 smart contracts at the time of writing, it should support more automation as its usage grows. The ability to dynamically add a new smart contract from the DELA framework without needs to manually modify the environment would be the absolute ideal scenario.
 
-\section{Future Work}
+The most painful part of the process is the WASM binary generation when using Emscripten ; smart contracts written in Go most often were translated to WASM without issues. Unfortunately, this is clearly the harder part to automate since issues with Emscripten where very frequent and needed unpredictable fixes every time. Additionally, in the case where this compilation would be done automatically by DELA, it would need access to each of the libraries imported by the smart contract which would be highly impractical. It makes much more sense to leave this compilation up to users especially since automating the C/C++ to WASM compilation is legitimately unfeasible at the present time.
+
+However, it would theoretically be possible to automate each step following the WASM compilation : DELA would receive the binary from the user, run a ``Sentinel-like'' validator on the binary (if such a system is available) then automatically add the binary to the environment. What was thought to be the first needed step for this automation was the development of a version of the environment which automatically supports additional binaries without the need to add new JavaScript code. Each binary would have had to be added in the correct folder corresponding to its source language as is currently the case since this impacts the way they are handled by the environment. 
+
+Unfortunately, it was found that the JavaScript WASM API does not expect many WASM binaries to be used simultaneously, and having a variable number of such binaries is even more problematic. This is not surprising considering the intended usage is to efficiently execute a heavy application in a web browser : entire games are usually run on a web browser as a single WASM binary as an example. The most elegant way to achieve a version which does not require new code additions while being compatible with the WASM API would likely be the following redesign : each source language should only have one corresponding WASM binary containing every smart contract as exported functions. Emscripten enables the compilation of multiple source files into one binary, but Go requires every function to be exported in the same main function if every G smart contract function is to be contained in the same WASM binary. A user would thus need to submit an updated version of a binary containing additional smart contracts to DELA instead of a new binary containing only one smart contract.
 
 \section{Conclusion}
 \newpage

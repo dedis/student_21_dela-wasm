@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.4)  8 JUN 2021 17:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.3.4)  10 JUN 2021 13:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -264,85 +264,101 @@ Package pdftex.def Info: wasm3.png  used on input line 127.
 File: increase_counter.png Graphic file (type png)
 <use increase_counter.png>
 Package pdftex.def Info: increase_counter.png  used on input line 143.
-(pdftex.def)             Requested size: 398.33858pt x 206.86473pt.
+(pdftex.def)             Requested size: 369.88582pt x 192.08385pt.
 
-Overfull \hbox (38.33858pt too wide) in paragraph at lines 143--144
+Overfull \hbox (9.88582pt too wide) in paragraph at lines 143--144
  [][] 
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 5274) has occurred while \output is active []
 
  [10]
-<gen_mul.png, id=53, 1171.37625pt x 651.43375pt>
+<gen_mul.png, id=53, 1144.275pt x 600.2425pt>
 File: gen_mul.png Graphic file (type png)
 <use gen_mul.png>
-Package pdftex.def Info: gen_mul.png  used on input line 152.
-(pdftex.def)             Requested size: 398.33858pt x 221.52429pt.
+Package pdftex.def Info: gen_mul.png  used on input line 154.
+(pdftex.def)             Requested size: 369.88582pt x 194.02321pt.
 
-Overfull \hbox (38.33858pt too wide) in paragraph at lines 152--153
- [][] 
- []
-
-<point_add.png, id=54, 1171.37625pt x 679.53876pt>
-File: point_add.png Graphic file (type png)
-<use point_add.png>
-Package pdftex.def Info: point_add.png  used on input line 160.
-(pdftex.def)             Requested size: 398.33858pt x 231.0816pt.
-
-Overfull \hbox (38.33858pt too wide) in paragraph at lines 160--161
+Overfull \hbox (9.88582pt too wide) in paragraph at lines 154--155
  [][] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [11 <./increase_counter.png> <./gen_mul.png>]
-<point_mul.png, id=60, 1173.38374pt x 696.6025pt>
+ [11 <./increase_counter.png>]
+<point_mul.png, id=58, 1173.38374pt x 696.6025pt>
 File: point_mul.png Graphic file (type png)
 <use point_mul.png>
-Package pdftex.def Info: point_mul.png  used on input line 169.
-(pdftex.def)             Requested size: 398.33858pt x 236.48032pt.
+Package pdftex.def Info: point_mul.png  used on input line 163.
+(pdftex.def)             Requested size: 369.88582pt x 219.59038pt.
 
-Overfull \hbox (38.33858pt too wide) in paragraph at lines 169--170
+Overfull \hbox (9.88582pt too wide) in paragraph at lines 163--164
  [][] 
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+LaTeX Warning: `h' float specifier changed to `ht'.
 
- [12 <./point_add.png> <./point_mul.png>] [13] (./report.bbl
-Underfull \hbox (badness 7925) in paragraph at lines 28--31
+<point_add.png, id=59, 923.45pt x 478.78876pt>
+File: point_add.png Graphic file (type png)
+<use point_add.png>
+Package pdftex.def Info: point_add.png  used on input line 173.
+(pdftex.def)             Requested size: 369.88582pt x 191.77512pt.
+
+Overfull \hbox (9.88582pt too wide) in paragraph at lines 173--174
+ [][] 
+ []
+
+
+Underfull \vbox (badness 4378) has occurred while \output is active []
+
+ [12 <./gen_mul.png>] [13 <./point_mul.png> <./point_add.png>] [14]
+Overfull \hbox (3.84052pt too wide) in paragraph at lines 202--203
+[]\OT1/cmr/m/n/10.95 Since Sen-tinel val-i-dates WASM bi-na-ries in-dis-crim-i-
+nately from their source
+ []
+
+[15] [16] (./report.bbl
+Underfull \hbox (badness 1033) in paragraph at lines 12--14
+[]\OT1/cmr/m/n/10.95 Ethereum fla-vored we-bassem-bly (ewasm).  $\OT1/cmtt/m/n/
+10.95 https : / / github . com /
+ []
+
+
+Underfull \hbox (badness 7925) in paragraph at lines 32--35
 []\OT1/cmr/m/n/10.95 Standardizing wasi: A sys-tem in-ter-face to run we-bassem
 -
  []
 
 
-Underfull \hbox (badness 5064) in paragraph at lines 28--31
+Underfull \hbox (badness 5064) in paragraph at lines 32--35
 \OT1/cmr/m/n/10.95 bly out-side the web.  $\OT1/cmtt/m/n/10.95 https : / / hack
 s . mozilla . org / 2019 / 03 /
  []
 
-) [14] (./report.aux) ) 
+) [17] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 2678 strings out of 480608
- 34865 string characters out of 5903631
- 273335 words of memory out of 5000000
- 18537 multiletter control sequences out of 15000+600000
+ 2683 strings out of 480608
+ 34916 string characters out of 5903631
+ 273355 words of memory out of 5000000
+ 18542 multiletter control sequences out of 15000+600000
  538971 words of font info for 49 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 30i,15n,31p,1082b,335s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 30i,15n,31p,1094b,335s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2020/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/am
 sfonts/cm/cmbx12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmr10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmr12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmtt10.pfb>
-Output written on report.pdf (15 pages, 1504554 bytes).
+fonts/cm/cmmi10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmr12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmtt10.pfb>
+Output written on report.pdf (18 pages, 1416674 bytes).
 PDF statistics:
- 95 PDF objects out of 1000 (max. 8388607)
- 56 compressed objects within 1 object stream
+ 108 PDF objects out of 1000 (max. 8388607)
+ 65 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

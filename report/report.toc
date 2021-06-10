@@ -9,14 +9,13 @@
 \contentsline {subsection}{\numberline {3.2}Environment Setup}{7}%
 \contentsline {subsection}{\numberline {3.3}Smart Contract Execution}{8}%
 \contentsline {subsection}{\numberline {3.4}Communication with DELA}{9}%
-\contentsline {section}{\numberline {4}Results}{11}%
+\contentsline {section}{\numberline {4}Results}{10}%
 \contentsline {subsection}{\numberline {4.1}Counter Increase}{11}%
-\contentsline {subsection}{\numberline {4.2}Generator Multiplication}{11}%
-\contentsline {subsection}{\numberline {4.3}Ed25519 Point Addition}{12}%
-\contentsline {subsection}{\numberline {4.4}Ed25519 Point Multiplication}{12}%
-\contentsline {section}{\numberline {5}Discussion}{13}%
-\contentsline {subsection}{\numberline {5.1}Determinism}{13}%
-\contentsline {subsection}{\numberline {5.2}Automated Smart Contract Loading}{13}%
-\contentsline {section}{\numberline {6}Future Work}{13}%
-\contentsline {section}{\numberline {7}Conclusion}{13}%
-\contentsline {section}{\numberline {8}Bibliography}{14}%
+\contentsline {subsection}{\numberline {4.2}Base Point Multiplication}{12}%
+\contentsline {subsection}{\numberline {4.3}Ed25519 Point Multiplication}{12}%
+\contentsline {subsection}{\numberline {4.4}Ed25519 Point Addition}{13}%
+\contentsline {section}{\numberline {5}Discussion}{14}%
+\contentsline {subsection}{\numberline {5.1}Determinism}{14}%
+\contentsline {subsection}{\numberline {5.2}Automated Smart Contract Loading}{15}%
+\contentsline {section}{\numberline {6}Conclusion}{16}%
+\contentsline {section}{\numberline {7}Bibliography}{17}%
